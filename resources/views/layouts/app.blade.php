@@ -30,7 +30,7 @@
     @if(Auth::check())
         <div class="page-container">
             @include('layouts.sidebar')
-            <div class="main-content">
+            <div class="main-content" style="height: auto">
                 @include('layouts.header')
                 <div class="main-content-inner">
                     @yield('content')
@@ -42,5 +42,7 @@
 
     @include('layouts.scripts')
     @yield('scripts')
+
+    @yield('modal')
 </body>
 </html>

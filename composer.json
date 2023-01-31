@@ -6,13 +6,16 @@
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
+        "doctrine/dbal": "^3.5",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
-        "laravel/ui": "^4.2"
+        "laravel/ui": "^4.2",
+        "plannr/laravel-fast-refresh-database": "^1.0"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.7",
         "fakerphp/faker": "^1.9.1",
         "laravel/pint": "^1.0",
         "laravel/sail": "^1.0.1",

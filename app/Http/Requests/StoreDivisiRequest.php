@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class StoreUserRequest extends FormRequest
+class StoreDivisiRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,16 +25,7 @@ class StoreUserRequest extends FormRequest
     public function rules()
     {
         return [
-            'uuid' => 'required|uuid',
-            'name' => 'required|string',
-            'email' => 'required|email',
-            'password' => 'required|string',
-            'bank' => 'required|string',
-            'norek' => 'required|string',
-            'divisi' => 'required|string',
-            'posisi' => 'required|string',
-            'cuti' => 'required|integer',
-            'salary' => 'required|integer',
+            'name' => 'required|string|max:255|unique:divisi,name',
         ];
     }
 }

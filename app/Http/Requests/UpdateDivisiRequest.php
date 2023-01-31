@@ -4,8 +4,9 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
-class StoreUserRequest extends FormRequest
+class UpdateDivisiRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,16 +26,11 @@ class StoreUserRequest extends FormRequest
     public function rules()
     {
         return [
-            'uuid' => 'required|uuid',
-            'name' => 'required|string',
-            'email' => 'required|email',
-            'password' => 'required|string',
-            'bank' => 'required|string',
-            'norek' => 'required|string',
-            'divisi' => 'required|string',
-            'posisi' => 'required|string',
-            'cuti' => 'required|integer',
-            'salary' => 'required|integer',
+            'name' => [
+                'required',
+                Rule::unique('divisi', 'name')->ignore($this->route('divisi')->id),'string','max:255',
+            ],
+            'is_active' => 'required|boolean',
         ];
     }
 }

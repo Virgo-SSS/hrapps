@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DivisiController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
@@ -28,8 +29,20 @@ Route::middleware('auth')->group(function(){
     });
 
     Route::controller(UserController::class)->prefix('users')->group(function () {
-        Route::get('/', 'index')->name('users.index');
-        Route::get('/create', 'create')->name('users.create');
+        Route::get('/',           'index')->name('users.index');
+        Route::get('/create',     'create')->name('users.create');
+        Route::post('/',          'store')->name('users.store');
+        Route::get('/{user}/edit','edit')->name('users.edit');
+        Route::put('/{user}',     'update')->name('users.update');
+        Route::delete('/{user}',  'destroy')->name('users.destroy');
     });
 
+    Route::controller(DivisiController::class)->prefix('divisi')->group(function () {
+        Route::get('/',              'index')->name('divisi.index');
+//        Route::get('/create',        'create')->name('divisi.create');
+        Route::post('/',             'store')->name('divisi.store');
+        Route::get('/{divisi}/edit', 'edit')->name('divisi.edit');
+        Route::put('/{divisi}',      'update')->name('divisi.update');
+        Route::delete('/{divisi}',   'destroy')->name('divisi.destroy');
+    });
 });
