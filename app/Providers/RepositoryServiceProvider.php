@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Interfaces\DivisiRepositoryInterface;
+use App\Interfaces\UserRepositoryInterface;
 use App\Repository\DivisiRepository;
+use App\Repository\UserRepository;
 use Illuminate\Support\ServiceProvider;
 
 class RepositoryServiceProvider extends ServiceProvider
@@ -16,6 +18,7 @@ class RepositoryServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind(DivisiRepositoryInterface::class, DivisiRepository::class);
+        $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
     }
 
     /**

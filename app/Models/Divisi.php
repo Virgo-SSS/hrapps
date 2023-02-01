@@ -27,4 +27,9 @@ class Divisi extends Model
     {
         return $this->belongsTo(User::class, 'edited_by');
     }
+
+    public function user()
+    {
+        return $this->hasMany(User::class, 'divisi_id');
+    }
 }

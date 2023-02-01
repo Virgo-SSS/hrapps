@@ -15,6 +15,7 @@ class DivisiTest extends TestCase
         $response = $this->get(route('divisi.index'));
 
         $response->assertStatus(302);
+        $response->assertRedirect(route('login'));
     }
 
     public function test_user_can_access_divisi_page_if_user_authenticated()
@@ -35,6 +36,7 @@ class DivisiTest extends TestCase
         ]);
 
         $response->assertStatus(302);
+        $response->assertRedirect(route('login'));
         $this->assertDatabaseMissing('divisi', [
             'name' => 'Divisi 1',
         ]);
@@ -121,6 +123,7 @@ class DivisiTest extends TestCase
         ]);
 
         $response->assertStatus(302);
+        $response->assertRedirect(route('login'));
         $this->assertDatabaseMissing('divisi', [
             'name' => 'Edit Divisi 1',
         ]);
@@ -264,6 +267,7 @@ class DivisiTest extends TestCase
         $response = $this->delete(route('divisi.destroy', $divisi));
 
         $response->assertStatus(302);
+        $response->assertRedirect(route('login'));
         $this->assertDatabaseHas('divisi', [
             'id' => $divisi->id,
         ]);

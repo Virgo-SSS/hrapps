@@ -2,12 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Interfaces\DivisiRepositoryInterface;
+use App\Interfaces\UserRepositoryInterface;
 use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 
 class UserController extends Controller
 {
+    private $repository;
+    private $divisiRepository;
+
+    public function __construct(UserRepositoryInterface $repository, DivisiRepositoryInterface $divisiRepository)
+    {
+        $this->repository = $repository;
+        $this->divisiRepository = $divisiRepository;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +25,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        return view('users.index', ['users' => User::all()]);
+        $users = $this->repository->getUser();
+        return view('users.index', compact('users'));
     }
 
     /**
@@ -25,7 +36,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('users.create');
+        $divisis = $this->divisiRepository->getDivisi();
+        return view('users.create', compact('divisis'));
     }
 
     /**

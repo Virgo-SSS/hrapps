@@ -39,7 +39,6 @@ Route::middleware('auth')->group(function(){
 
     Route::controller(DivisiController::class)->prefix('divisi')->group(function () {
         Route::get('/',              'index')->name('divisi.index');
-//        Route::get('/create',        'create')->name('divisi.create');
         Route::post('/',             'store')->name('divisi.store');
         Route::get('/{divisi}/edit', 'edit')->name('divisi.edit');
         Route::put('/{divisi}',      'update')->name('divisi.update');

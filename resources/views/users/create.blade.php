@@ -10,7 +10,7 @@
         <div class="col-12">
             <div class="card mt-5">
                 <div class="card-body">
-                    <h4 class="header-title">User</h4>
+                    <h4 class="header-title">Create User</h4>
                     <form action="{{ route('users.store') }}" method="POST">
                         @csrf
                         <div class="form-row">
@@ -59,7 +59,7 @@
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label for="norek">Rekening Number</label>
-                                <input type="number" name="norek" id="norek" class="form-control" placeholder="xxxx-xxx-xxx" required>
+                                <input type="text" name="norek" id="norek" class="form-control" placeholder="xxxx-xxx-xxx" required>
                                 <div class="invalid-feedback">
                                     Please provide a valid city.
                                 </div>
@@ -71,8 +71,9 @@
                                 <label for="divisi">Divisi</label>
                                 <select name="divisi" id="divisi" class="form-control">
                                     <option selected disabled>Select</option>
-                                    <option value="1">Marketing</option>
-                                    <option value="0">IT</option>
+                                    @foreach($divisis as $divisi)
+                                        <option value="{{ $divisi->id }}">{{ ucfirst($divisi->name) }}</option>
+                                    @endforeach
                                 </select>
                                 <div class="invalid-feedback">
                                     Please choose a username.

@@ -21,7 +21,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'uuid'
+        'uuid',
+        'divisi_id',
     ];
 
     /**
@@ -43,8 +44,13 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function divisi()
+    public function divisiMaker()
     {
         return $this->hasMany(Divisi::class, 'created_by');
+    }
+
+    public function divisi()
+    {
+        return $this->belongsTo(Divisi::class, 'divisi_id');
     }
 }

@@ -17,6 +17,7 @@
                     <th>No</th>
                     <th>UUID</th>
                     <th>Name</th>
+                    <th>Divisi</th>
                     <th>Email</th>
                     <th>Created At</th>
                     <th>Actions</th>
@@ -28,6 +29,7 @@
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $user->uuid }}</td>
                         <td>{{ $user->name }}</td>
+                        <td>{{ ($user->divisi) ? $user->divisi->name : '-' }}</td>
                         <td>{{ $user->email }}</td>
                         <td>{{ $user->created_at }}</td>
                         <td>
