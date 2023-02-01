@@ -32,4 +32,9 @@ class DivisiRepository implements DivisiRepositoryInterface
             'edited_by' => Auth::id(),
         ]);
     }
+
+    public function delete(Divisi $divisi): void
+    {
+        $divisi->delete();
+    }
 }

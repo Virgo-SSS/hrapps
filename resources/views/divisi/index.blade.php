@@ -40,8 +40,8 @@
                             <td>{{ (!is_null($divisi->editedBy)) ? $divisi->editedBy->name : '-' }}</td>
                             <td>
                                 <a href="{{ route('divisi.edit', $divisi) }}" style="font-size: 17px"><i class="fa fa-pencil"></i></a> |
-                                <a href="#"><i class="fa fa-trash" style="color: red;font-size: 17px"></i></a>
-                                <form action="#" method="POST" style="display: inline-block;">
+                                <a href="#"><i class="fa fa-trash" style="color: red;font-size: 17px" onclick="$('#delete-'+{{ $divisi->id }}).submit()"></i></a>
+                                <form action="{{ route('divisi.destroy', $divisi) }}" method="POST" id="delete-{{ $divisi->id }}" style="display: inline-block;">
                                     @csrf
                                     @method('DELETE')
                                 </form>

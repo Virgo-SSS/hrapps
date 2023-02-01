@@ -49,7 +49,7 @@ class DivisiController extends Controller
     public function store(StoreDivisiRequest $request)
     {
         $this->Repository->store($request);
-        return redirect()->route('divisi.index')->with('success', 'Divisi berhasil ditambahkan');
+        return redirect()->route('divisi.index')->with('toastr-success', 'Divisi berhasil ditambahkan');
     }
 
     /**
@@ -84,7 +84,7 @@ class DivisiController extends Controller
     public function update(UpdateDivisiRequest $request, Divisi $divisi)
     {
         $this->Repository->update($request, $divisi);
-        return redirect()->route('divisi.index')->with('success', 'Divisi berhasil diubah');
+        return redirect()->route('divisi.index')->with('toastr-success', 'Divisi berhasil diubah');
     }
 
     /**
@@ -95,6 +95,7 @@ class DivisiController extends Controller
      */
     public function destroy(Divisi $divisi)
     {
-        //
+        $this->Repository->delete($divisi);
+        return redirect()->route('divisi.index')->with('toastr-success', 'Divisi berhasil dihapus');
     }
 }

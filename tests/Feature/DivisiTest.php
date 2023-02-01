@@ -257,4 +257,30 @@ class DivisiTest extends TestCase
         ]);
     }
 
+    public function test_user_cant_delete_divisi_if_user_unauthenticated()
+    {
+        $divisi = Divisi::factory()->create();
+
+        $response = $this->delete(route('divisi.destroy', $divisi));
+
+        $response->assertStatus(302);
+        $this->assertDatabaseHas('divisi', [
+            'id' => $divisi->id,
+        ]);
+    }
+
+    public function test_user_can_delete_divisi_if_user_authenticated()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $divisi = Divisi::factory()->create();
+
+        $response = $this->delete(route('divisi.destroy', $divisi));
+
+        $response->assertStatus(302);
+        $this->assertDatabaseMissing('divisi', [
+            'id' => $divisi->id,
+        ]);
+    }
 }
