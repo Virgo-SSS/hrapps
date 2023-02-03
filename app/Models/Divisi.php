@@ -32,4 +32,9 @@ class Divisi extends Model
     {
         return $this->hasMany(User::class, 'divisi_id');
     }
+
+    public function posisi()
+    {
+        return $this->hasMany(Posisi::class, 'divisi_id');
+    }
 }

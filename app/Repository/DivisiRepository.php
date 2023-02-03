@@ -16,6 +16,11 @@ class DivisiRepository implements DivisiRepositoryInterface
         return Divisi::with(['createdBy', 'editedBy'])->get();
     }
 
+    public function getDivisiWithoutEagerLoading(): Collection
+    {
+        return Divisi::all();
+    }
+
     public function store(StoreDivisiRequest $request): void
     {
         Divisi::create([

@@ -2,12 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Interfaces\DivisiRepositoryInterface;
+use App\Interfaces\PosisiRepositoryInterface;
 use App\Models\Posisi;
 use App\Http\Requests\StorePosisiRequest;
 use App\Http\Requests\UpdatePosisiRequest;
 
 class PosisiController extends Controller
 {
+    private $Repository;
+    private $divisiRepository;
+
+    public function __construct(PosisiRepositoryInterface $Repository, DivisiRepositoryInterface $divisiRepository)
+    {
+        $this->Repository = $Repository;
+        $this->divisiRepository = $divisiRepository;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +26,9 @@ class PosisiController extends Controller
      */
     public function index()
     {
-        //
+        $posisis = $this->Repository->getPosisi();
+        $divisis = $this->divisiRepository->getDivisiWithoutEagerLoading();
+        return view('posisi.index', compact('posisis','divisis'));
     }
 
     /**
@@ -36,7 +49,8 @@ class PosisiController extends Controller
      */
     public function store(StorePosisiRequest $request)
     {
-        //
+        $this->Repository->store($request);
+        return redirect()->route('posisi.index')->with('toastr-success', 'Posisi berhasil ditambahkan');
     }
 
     /**
@@ -58,7 +72,8 @@ class PosisiController extends Controller
      */
     public function edit(Posisi $posisi)
     {
-        //
+        $divisis = $this->divisiRepository->getDivisiWithoutEagerLoading();
+        return view('posisi.edit', compact('posisi','divisis'));
     }
 
     /**
@@ -70,7 +85,8 @@ class PosisiController extends Controller
      */
     public function update(UpdatePosisiRequest $request, Posisi $posisi)
     {
-        //
+        $this->Repository->update($request, $posisi);
+        return redirect()->route('posisi.index')->with('toastr-success', 'Posisi berhasil diubah');
     }
 
     /**
@@ -81,6 +97,7 @@ class PosisiController extends Controller
      */
     public function destroy(Posisi $posisi)
     {
-        //
+        $this->Repository->delete($posisi);
+        return redirect()->route('posisi.index')->with('toastr-success', 'Posisi berhasil dihapus');
     }
 }

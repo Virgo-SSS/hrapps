@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DivisiController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PosisiController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -43,5 +44,13 @@ Route::middleware('auth')->group(function(){
         Route::get('/{divisi}/edit', 'edit')->name('divisi.edit');
         Route::put('/{divisi}',      'update')->name('divisi.update');
         Route::delete('/{divisi}',   'destroy')->name('divisi.destroy');
+    });
+
+    Route::controller(PosisiController::class)->prefix('posisi')->group(function() {
+        Route::get('/',              'index')->name('posisi.index');
+        Route::post('/',             'store')->name('posisi.store');
+        Route::get('/{posisi}/edit', 'edit')->name('posisi.edit');
+        Route::put('/{posisi}',      'update')->name('posisi.update');
+        Route::delete('/{posisi}',   'destroy')->name('posisi.destroy');
     });
 });

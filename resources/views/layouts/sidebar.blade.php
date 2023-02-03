@@ -22,6 +22,9 @@
                     <li>
                         <a href="{{ route('divisi.index') }}" aria-expanded="true"><i class="fa fa-suitcase"></i><span>Divisi</span></a>
                     </li>
+                    <li>
+                        <a href="{{ route('posisi.index') }}" aria-expanded="true"><i class="fa fa-legal"></i><span>Posisi</span></a>
+                    </li>
                 </ul>
             </nav>
         </div>
