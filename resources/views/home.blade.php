@@ -12,7 +12,7 @@
                             <h4 class="header-title mb-0">Join Date</h4>
                         </div>
                         <div class="d-flex justify-content-between pb-2">
-                            <h2>20-Januari-9999 </h2>
+                            <h2>{{ Auth::user()->profile->join_date }}</h2>
                         </div>
                     </div>
                 </div>
@@ -25,7 +25,7 @@
                             <h4 class="header-title mb-0">Sisa Cuti</h4>
                         </div>
                         <div class="d-flex justify-content-between pb-2">
-                            <h2>28 hari</h2>
+                            <h2>{{ Auth::user()->profile->cuti }} Days</h2>
                         </div>
                     </div>
                 </div>
@@ -38,7 +38,7 @@
                             <h4 class="header-title mb-0">Divisi</h4>
                         </div>
                         <div class="d-flex justify-content-between pb-2">
-                            <h2>Manager</h2>
+                            <h2>{{ Auth::user()->profile->divisi->name }}</h2>
                         </div>
                     </div>
                 </div>

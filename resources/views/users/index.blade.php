@@ -18,8 +18,10 @@
                     <th>UUID</th>
                     <th>Name</th>
                     <th>Divisi</th>
+                    <th>Posisi</th>
                     <th>Email</th>
-                    <th>Created At</th>
+                    <th>Cuti</th>
+                    <th>Join Date</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -29,9 +31,11 @@
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $user->uuid }}</td>
                         <td>{{ $user->name }}</td>
-                        <td>{{ ($user->divisi) ? $user->divisi->name : '-' }}</td>
+                        <td>{{ $user->divisi_name }}</td>
+                        <td>{{ $user->posisi_name }}</td>
                         <td>{{ $user->email }}</td>
-                        <td>{{ $user->created_at }}</td>
+                        <td>{{ $user->cuti }} Days</td>
+                        <td>{{ $user->join_date }}</td>
                         <td>
                             <a href="#" class="#"><i class="fa fa-pencil"></i></a> |
                             <a href="#"><i class="fa fa-trash" style="color: red;"></i></a>

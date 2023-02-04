@@ -26,6 +26,13 @@ class DivisiFactory extends Factory
 
     private function getUserId()
     {
-        return User::factory()->create()->id;
+        // get random user
+        $user = User::inRandomOrder()->first();
+
+        if($user) {
+            return $user->id;
+        }else {
+            return User::factory()->create()->id;
+        }
     }
 }

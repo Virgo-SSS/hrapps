@@ -16,96 +16,120 @@
                         <div class="form-row">
                             <div class="col-md-4 mb-3">
                                 <label for="uuid">UUID</label>
-                                <input type="number" name="uuid" id="uuid" class="form-control" placeholder="xxxxxxx" required>
-                                <div class="valid-feedback">
-                                    Looks good!
-                                </div>
+                                <input type="number" name="uuid" id="uuid" value="{{ old('uuid') }}" class="form-control" placeholder="xxxxxxx" required>
+                                @error('uuid')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label for="name">Full Name</label>
-                                <input type="text" name="name" id="name" class="form-control" placeholder="Full Name" required>
-                                <div class="valid-feedback">
-                                    Looks good!
-                                </div>
+                                <input type="text" name="name" id="name" value="{{ old('name') }}" class="form-control" placeholder="Full Name" required>
+                                @error('name')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label for="password">Password</label>
                                 <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
-                                <div class="valid-feedback">
-                                    Looks good!
-                                </div>
+                                @error('password')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="col-md-4 mb-3">
                                 <label for="email">Email</label>
-                                <input type="text" name="email" id="email" class="form-control" placeholder="name@example.com" required>
-                                <div class="invalid-feedback">
-                                    Please provide a valid city.
-                                </div>
+                                <input type="text" name="email" id="email" value="{{ old('email') }}" class="form-control" placeholder="name@example.com" required>
+                                @error('email')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label for="bank">Bank</label>
-                                <select name="bank" id="bank" class="form-control">
+                                <select name="bank" id="bank" class="form-control" required>
                                     <option selected disabled>Select</option>
                                     @foreach(config('bank') as $key => $value)
-                                        <option value="{{ $value }}">{{ $key }}</option>
+                                        <option value="{{ $value }}" @selected(old('bank') == $value)>{{ $key }}</option>
                                     @endforeach
                                 </select>
-                                <div class="invalid-feedback">
-                                    Please choose a username.
-                                </div>
+                                @error('bank')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="norek">Rekening Number</label>
-                                <input type="text" name="norek" id="norek" class="form-control" placeholder="xxxx-xxx-xxx" required>
-                                <div class="invalid-feedback">
-                                    Please provide a valid city.
-                                </div>
+                                <label for="bank_account_number">Bank Account Number</label>
+                                <input type="number" name="bank_account_number" id="bank_account_number" value="{{ old('bank_account_number') }}" class="form-control" placeholder="xxxxxxxxx" required>
+                                @error('bank_account_number')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="col-md-4 mb-3">
-                                <label for="divisi">Divisi</label>
-                                <select name="divisi" id="divisi" class="form-control">
+                                <label for="divisi_id">Divisi</label>
+                                <select name="divisi_id" id="divisi_id" class="form-control" required>
                                     <option selected disabled>Select</option>
                                     @foreach($divisis as $divisi)
-                                        <option value="{{ $divisi->id }}">{{ ucfirst($divisi->name) }}</option>
+                                        <option value="{{ $divisi->id }}" @selected(old('divisi_id') == $divisi->id)>{{ ucfirst($divisi->name) }}</option>
                                     @endforeach
                                 </select>
-                                <div class="invalid-feedback">
-                                    Please choose a username.
-                                </div>
+                                @error('divisi_id')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="posisi">Posisi</label>
-                                <select name="posisi" id="posisi" class="form-control">
+                                <label for="posisi_id">Posisi</label>
+                                <!-- Hidden Input Field: posisi Name this is just for validation error -->
+                                <input type="hidden" id="posisi_name" name="posisi_name" value="{{ old('posisi_name') }}">
+
+                                <select name="posisi_id" id="posisi_id" class="form-control" disabled required>
                                     <option selected disabled>Select</option>
-                                    <option value="1">Front</option>
-                                    <option value="0">Backend</option>
+                                    @if (old('posisi_id'))
+                                        <!-- Option for the selected city -->
+                                        <option value="{{ old('posisi_id') }}" selected>{{ old('posisi_name') }}</option>
+                                    @endif
                                 </select>
-                                <div class="invalid-feedback">
-                                    Please choose a username.
-                                </div>
+                                @error('posisi_id')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label for="join_date">Join Date</label>
-                                <input type="date" name="join_date" id="join_date" class="form-control" placeholder="Join Date" required>
-                                <div class="invalid-feedback">
-                                    Please provide a valid state.
-                                </div>
+                                <input type="date" name="join_date" id="join_date" value="{{ old('join_date') }}" class="form-control" placeholder="Join Date" required>
+                                @error('join_date')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                             </div>
                         </div>
-
                         <div class="form-row">
                             <div class="col-md-4 mb-3">
                                 <label for="cuti">Cuti</label>
-                                <input type="number" name="cuti" id="cuti" class="form-control" placeholder="Cuti" required>
-                                <div class="invalid-feedback">
-                                    Please provide a valid zip.
-                                </div>
+                                <input type="number" name="cuti" id="cuti" value="{{ old('cuti') }}" class="form-control" placeholder="Cuti" required>
+                                @error('cuti')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label for="salary">Salary</label>
@@ -113,10 +137,12 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text" id="inputGroupPrepend">Rp.</span>
                                     </div>
-                                    <input type="text" name="salary" id="salary" class="form-control" placeholder="Salary" aria-describedby="inputGroupPrepend" required>
-                                    <div class="invalid-feedback">
-                                        Please choose a username.
-                                    </div>
+                                    <input type="text" name="salary" id="salary" value="{{ old('salary') }}"  class="form-control" placeholder="Salary" required>
+                                    @error('salary')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
                                 </div>
                             </div>
                         </div>
@@ -126,4 +152,37 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('scripts')
+    <script>
+        $('#divisi_id').on('change', function () {
+            var divisi = $(this).val();
+            let link = "{{ route('posisi.by-divisi', ':id') }}";
+            link = link.replace(':id', divisi);
+            $.ajax({
+                url: link,
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
+                    $('#posisi_id').prop('disabled', false);
+                    $('#posisi_id').empty();
+                    $('#posisi_id').append('<option selected disabled>Select</option>');
+                    $.each(data, function (key, posisi) {
+                        $('#posisi_id').append($('<option>', {
+                            value: posisi.id,
+                            text: posisi.name
+                        }));
+                    });
+                }
+            });
+        });
+
+        $('#posisi_id').change(function() {
+            let posisiName = $(this).find(':selected').text();
+            $('#posisi_name').val(posisiName);
+        });
+
+        $('#salary').mask('#.##0', {reverse: true});
+    </script>
 @endsection

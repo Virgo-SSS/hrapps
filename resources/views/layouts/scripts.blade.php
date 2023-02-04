@@ -16,6 +16,7 @@
 <script src="{{ asset('assets/js/plugins.js') }}"></script>
 <script src="{{ asset('assets/js/scripts.js') }}"></script>
 <script src="{{ asset('toastr/toastr.min.js') }}"></script>
+<script src="{{ asset('mask/jquery.mask.min.js') }}"></script>
 
 {{-- Datatable --}}
 <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>

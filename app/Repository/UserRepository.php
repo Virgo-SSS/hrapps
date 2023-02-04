@@ -4,20 +4,34 @@ namespace App\Repository;
 
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Interfaces\UserProfileRepositoryInterface;
 use App\Interfaces\UserRepositoryInterface;
 use App\Models\User;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class UserRepository implements UserRepositoryInterface
 {
     public function getUser(): Collection
     {
-        return User::with(['divisi'])->get();
+       return DB::table('users')
+        ->join('user_profile', 'users.id', '=', 'user_profile.user_id')
+        ->join('divisi', 'user_profile.divisi_id', '=', 'divisi.id')
+        ->join('posisi', 'user_profile.posisi_id', '=', 'posisi.id')
+        ->select('users.*', 'user_profile.*', 'divisi.name as divisi_name', 'posisi.name as posisi_name')
+        ->get();
     }
 
     public function create(StoreUserRequest $request): void
     {
-        // TODO: Implement create() method.
+        $user = User::create([
+            'uuid'      => $request->uuid,
+            'name'      => $request->name,
+            'password'  => bcrypt($request->password),
+            'email'     => $request->email,
+        ]);
+
+        app(UserProfileRepositoryInterface::class)->store($user, $request->all());
     }
 
     public function update(UpdateUserRequest $request, User $user): void

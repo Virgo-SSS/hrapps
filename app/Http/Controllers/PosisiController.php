@@ -7,6 +7,7 @@ use App\Interfaces\PosisiRepositoryInterface;
 use App\Models\Posisi;
 use App\Http\Requests\StorePosisiRequest;
 use App\Http\Requests\UpdatePosisiRequest;
+use Illuminate\Http\JsonResponse;
 
 class PosisiController extends Controller
 {
@@ -50,7 +51,7 @@ class PosisiController extends Controller
     public function store(StorePosisiRequest $request)
     {
         $this->Repository->store($request);
-        return redirect()->route('posisi.index')->with('toastr-success', 'Posisi berhasil ditambahkan');
+        return redirect()->route('posisi.index')->with('toastr-success', 'Posisi Successfully Created');
     }
 
     /**
@@ -86,7 +87,7 @@ class PosisiController extends Controller
     public function update(UpdatePosisiRequest $request, Posisi $posisi)
     {
         $this->Repository->update($request, $posisi);
-        return redirect()->route('posisi.index')->with('toastr-success', 'Posisi berhasil diubah');
+        return redirect()->route('posisi.index')->with('toastr-success', 'Posisi Successfully Updated');
     }
 
     /**
@@ -98,6 +99,13 @@ class PosisiController extends Controller
     public function destroy(Posisi $posisi)
     {
         $this->Repository->delete($posisi);
-        return redirect()->route('posisi.index')->with('toastr-success', 'Posisi berhasil dihapus');
+        return redirect()->route('posisi.index')->with('toastr-success', 'Posisi Successfully Deleted');
+    }
+
+
+    public function getPosisiByDivisi(int $divisi_id): JsonResponse
+    {
+        $posisis = $this->Repository->getPosisiByDivisi($divisi_id);
+        return response()->json($posisis);
     }
 }

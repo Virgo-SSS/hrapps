@@ -52,5 +52,7 @@ Route::middleware('auth')->group(function(){
         Route::get('/{posisi}/edit', 'edit')->name('posisi.edit');
         Route::put('/{posisi}',      'update')->name('posisi.update');
         Route::delete('/{posisi}',   'destroy')->name('posisi.destroy');
+
+        Route::get('/posisi-by-divisi/{divisi_id}', 'getPosisiByDivisi')->name('posisi.by-divisi');
     });
 });

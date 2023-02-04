@@ -51,11 +51,8 @@ class DivisiTest extends TestCase
             'name' => '',
         ]);
 
-        $response->assertStatus(302);
         $response->assertSessionHasErrors('name');
-        $this->assertDatabaseMissing('divisi', [
-            'name' => '',
-        ]);
+        $this->assertEquals('The name field is required.', session()->get('errors')->first('name'));
     }
 
     public function test_store_divisi_field_name_cant_has_duplicate_name()
@@ -69,8 +66,8 @@ class DivisiTest extends TestCase
             'name' => $divisi->name,
         ]);
 
-        $response->assertStatus(302);
         $response->assertSessionHasErrors('name');
+        $this->assertEquals('The name has already been taken.', session()->get('errors')->first('name'));
     }
 
     public function test_store_divisi_field_name_cant_more_than_255()
@@ -82,8 +79,8 @@ class DivisiTest extends TestCase
             'name' => str_repeat('a', 256),
         ]);
 
-        $response->assertStatus(302);
         $response->assertSessionHasErrors('name');
+        $this->assertEquals('The name must not be greater than 255 characters.', session()->get('errors')->first('name'));
     }
 
     public function test_store_divisi_field_name_should_be_string()
@@ -95,8 +92,8 @@ class DivisiTest extends TestCase
             'name' => 123,
         ]);
 
-        $response->assertStatus(302);
         $response->assertSessionHasErrors('name');
+        $this->assertEquals('The name must be a string.', session()->get('errors')->first('name'));
     }
 
     public function test_user_can_create_divisi_if_user_authenticated()
@@ -109,6 +106,8 @@ class DivisiTest extends TestCase
         ]);
 
         $response->assertStatus(302);
+        $response->assertRedirect(route('divisi.index'));
+        $response->assertSessionHas('toastr-success', 'Divisi Successfully Created');
         $this->assertDatabaseHas('divisi', [
             'name' => 'divisi 1'
         ]);
@@ -141,8 +140,8 @@ class DivisiTest extends TestCase
             'is_active' => true,
         ]);
 
-        $response->assertStatus(302);
         $response->assertSessionHasErrors('name');
+        $this->assertEquals('The name field is required.', session()->get('errors')->first('name'));
     }
 
     public function test_update_divisi_field_is_active_required()
@@ -157,8 +156,8 @@ class DivisiTest extends TestCase
             'is_active' => '',
         ]);
 
-        $response->assertStatus(302);
         $response->assertSessionHasErrors('is_active');
+        $this->assertEquals('The is active field is required.', session()->get('errors')->first('is_active'));
     }
 
     public function test_update_divisi_field_is_active_must_boolean()
@@ -173,8 +172,8 @@ class DivisiTest extends TestCase
             'is_active' => 'test',
         ]);
 
-        $response->assertStatus(302);
         $response->assertSessionHasErrors('is_active');
+        $this->assertEquals('The is active field must be true or false.', session()->get('errors')->first('is_active'));
     }
 
     public function test_update_divisi_field_name_cant_has_duplicate_name()
@@ -190,8 +189,8 @@ class DivisiTest extends TestCase
             'is_active' => true,
         ]);
 
-        $response->assertStatus(302);
         $response->assertSessionHasErrors('name');
+        $this->assertEquals('The name has already been taken.', session()->get('errors')->first('name'));
     }
 
     public function test_update_divisi_field_name_cant_more_than_255()
@@ -205,8 +204,8 @@ class DivisiTest extends TestCase
             'is_active' => true,
         ]);
 
-        $response->assertStatus(302);
         $response->assertSessionHasErrors('name');
+        $this->assertEquals('The name must not be greater than 255 characters.', session()->get('errors')->first('name'));
     }
 
     public function test_update_divisi_field_name_should_be_string()
@@ -219,8 +218,8 @@ class DivisiTest extends TestCase
             'name' => 123,
         ]);
 
-        $response->assertStatus(302);
         $response->assertSessionHasErrors('name');
+        $this->assertEquals('The name must be a string.', session()->get('errors')->first('name'));
     }
 
     public function test_user_can_update_name_divisi_if_user_authenticated()
@@ -235,6 +234,8 @@ class DivisiTest extends TestCase
         ]);
 
         $response->assertStatus(302);
+        $response->assertRedirect(route('divisi.index'));
+        $response->assertSessionHas('toastr-success', 'Divisi Successfully Updated');
         $this->assertDatabaseHas('divisi', [
             'name' => 'Edit Divisi 1',
             'edited_by' => $user->id,
@@ -253,6 +254,8 @@ class DivisiTest extends TestCase
         ]);
 
         $response->assertStatus(302);
+        $response->assertRedirect(route('divisi.index'));
+        $response->assertSessionHas('toastr-success', 'Divisi Successfully Updated');
         $this->assertDatabaseHas('divisi', [
             'name' => $divisi->name,
             'is_active' => false,
@@ -283,6 +286,8 @@ class DivisiTest extends TestCase
         $response = $this->delete(route('divisi.destroy', $divisi));
 
         $response->assertStatus(302);
+        $response->assertRedirect(route('divisi.index'));
+        $response->assertSessionHas('toastr-success', 'Divisi Successfully Deleted');
         $this->assertDatabaseMissing('divisi', [
             'id' => $divisi->id,
         ]);

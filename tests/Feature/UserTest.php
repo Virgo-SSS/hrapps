@@ -3,12 +3,26 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use App\Models\UserProfile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class UserTest extends TestCase
 {
+    private function prepareRequest(): array
+    {
+        $user = $this->makeUserArray();
+        $userProfile =  UserProfile::factory()->make()->toArray();
+
+        $request = array_merge($user, $userProfile);
+
+        unset($request['email_verified_at']);
+        unset($request['user_id']);
+
+        return $request;
+    }
+
     public function test_user_cant_go_to_user_page_if_not_authenticated()
     {
         $response = $this->get(route('users.index'));
@@ -41,5 +55,373 @@ class UserTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSeeText('Create User');
+    }
+
+    public function test_store_user_field_uuid_is_required()
+    {
+        $user = User::factory()->create();
+
+        $request = $this->prepareRequest();
+        $request['uuid'] = null;
+
+        $response = $this->actingAs($user)->post(route('users.store'), $request);
+
+        $response->assertSessionHasErrors('uuid');
+        $this->assertEquals('The uuid field is required.', session()->get('errors')->first('uuid'));
+    }
+
+    public function test_store_user_field_uuid_is_unique()
+    {
+        $user = User::factory()->create();
+
+        $request = $this->prepareRequest();
+        $request['uuid'] = $user->uuid;
+
+        $response = $this->actingAs($user)->post(route('users.store'), $request);
+
+        $response->assertSessionHasErrors('uuid');
+        $this->assertEquals('The uuid has already been taken.', session()->get('errors')->first('uuid'));
+    }
+
+    public function test_store_user_field_name_is_required()
+    {
+        $user = User::factory()->create();
+        $request = $this->prepareRequest();
+        $request['name'] = null;
+
+        $response = $this->actingAs($user)->post(route('users.store'), $request);
+
+        $response->assertSessionHasErrors('name');
+        $this->assertEquals('The name field is required.', session()->get('errors')->first('name'));
+
+    }
+
+    public function test_store_user_field_name_must_be_string()
+    {
+        $user = User::factory()->create();
+        $request = $this->prepareRequest();;
+        $request['name'] = 123;
+
+        $response = $this->actingAs($user)->post(route('users.store'), $request);
+
+        $response->assertSessionHasErrors('name');
+        $this->assertEquals('The name must be a string.', session()->get('errors')->first('name'));
+    }
+
+    public function test_store_user_field_name_max_255()
+    {
+        $user = User::factory()->create();
+
+        $request = $this->prepareRequest();;
+        $request['name'] = str_repeat('a', 256);
+
+        $response = $this->actingAs($user)->post(route('users.store'), $request);
+
+        $response->assertSessionHasErrors('name');
+        $this->assertEquals('The name must not be greater than 255 characters.', session()->get('errors')->first('name'));
+    }
+
+    public function test_store_user_field_password_is_required()
+    {
+        $user = User::factory()->create();
+
+        $request = $this->prepareRequest();
+        $request['password'] = null;
+
+        $response = $this->actingAs($user)->post(route('users.store'), $request);
+
+        $response->assertSessionHasErrors('password');
+        $this->assertEquals('The password field is required.', session()->get('errors')->first('password'));
+    }
+
+    public function test_store_user_field_password_min_6()
+    {
+        $user = User::factory()->create();
+
+        $request = $this->prepareRequest();
+        $reqeust['password'] = '12345';
+
+        $response = $this->actingAs($user)->post(route('users.store'), $reqeust);
+
+        $response->assertSessionHasErrors('password');
+        $this->assertEquals('The password must be at least 6 characters.', session()->get('errors')->first('password'));
+    }
+
+    public function test_store_user_field_password_must_string()
+    {
+        $user = User::factory()->create();
+        $request = $this->prepareRequest();
+        $request['password'] = 123;
+
+        $response = $this->actingAs($user)->post(route('users.store'), $request);
+
+        $response->assertSessionHasErrors('password');
+        $this->assertEquals('The password must be a string.', session()->get('errors')->first('password'));
+    }
+
+    public function test_store_user_field_email_is_required()
+    {
+        $user = User::factory()->create();
+        $request = $this->prepareRequest();
+        $request['email'] = null;
+
+        $response = $this->actingAs($user)->post(route('users.store'), $request);
+
+        $response->assertSessionHasErrors('email');
+        $this->assertEquals('The email field is required.', session()->get('errors')->first('email'));
+    }
+
+    public function test_store_profile_field_bank_is_required()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $request =$this->prepareRequest();
+        $request['bank'] = null;
+
+        $response = $this->post(route('users.store'), $request);
+
+        $response->assertSessionHasErrors('bank');
+        $this->assertEquals('The bank field is required.', session()->get('errors')->first('bank'));
+    }
+
+    public function test_store_profile_field_bank_should_be_exists_in_config_bank()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $request =$this->prepareRequest();
+        $request['bank'] = 999999;
+
+        $response = $this->post(route('users.store'), $request);
+        $response->assertSessionHasErrors('bank');
+        $this->assertEquals('The bank must be a valid bank.', session()->get('errors')->first('bank'));
+    }
+
+    public function test_store_profile_field_bank_account_number_is_required()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $request = $this->prepareRequest();
+        $request['bank_account_number'] = null;
+
+        $response = $this->post(route('users.store'), $request);
+
+        $response->assertSessionHasErrors('bank_account_number');
+        $this->assertEquals('The bank account number field is required.', session()->get('errors')->first('bank_account_number'));
+    }
+
+    public function test_store_profile_field_bank_account_number_should_be_numeric()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        // set password field is visible
+        $request = $this->prepareRequest();
+        $request['bank_account_number'] = 'asdadasd';
+
+        $response = $this->post(route('users.store'), $request);
+        $response->assertSessionHasErrors('bank_account_number');
+        $this->assertEquals('The bank account number must be a number.', session()->get('errors')->first('bank_account_number'));
+    }
+
+    public function test_store_profile_field_divisi_id_is_required()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $request = $this->prepareRequest();
+        $request['divisi_id'] = null;
+
+        $response = $this->post(route('users.store'), $request);
+
+        $response->assertSessionHasErrors('divisi_id');
+        $this->assertEquals('The divisi id field is required.', session()->get('errors')->first('divisi_id'));
+    }
+
+    public function test_store_profile_field_divisi_id_is_integer()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $request = $this->prepareRequest();
+        $request['divisi_id'] = 'asdadasd';
+
+        $response = $this->post(route('users.store'), $request);
+
+        $response->assertSessionHasErrors('divisi_id');
+        $this->assertEquals('The divisi id must be an integer.', session()->get('errors')->first('divisi_id'));
+    }
+
+    public function test_store_profile_field_divisi_id_should_be_exists_in_divisi_table()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $request = $this->prepareRequest();
+        $request['divisi_id'] = 999999;
+
+        $response = $this->post(route('users.store'), $request);
+
+        $response->assertSessionHasErrors('divisi_id');
+        $this->assertEquals('The selected divisi id is invalid.', session()->get('errors')->first('divisi_id'));
+    }
+
+    public function test_store_profile_field_posisi_id_is_required()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $request = $this->prepareRequest();
+        $request['posisi_id'] = null;
+
+        $response = $this->post(route('users.store'), $request);
+
+        $response->assertSessionHasErrors('posisi_id');
+        $this->assertEquals('The posisi id field is required.', session()->get('errors')->first('posisi_id'));
+    }
+
+    public function test_store_profile_field_posisi_id_is_integer()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $request = $this->prepareRequest();
+        $request['posisi_id'] = 'asdadasd';
+
+        $response = $this->post(route('users.store'), $request);
+
+        $response->assertSessionHasErrors('posisi_id');
+        $this->assertEquals('The posisi id must be an integer.', session()->get('errors')->first('posisi_id'));
+    }
+
+    public function test_store_profile_field_posisi_id_should_be_exists_in_posisi_table()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $request = $this->prepareRequest();
+        $request['posisi_id'] = 999999;
+
+        $response = $this->post(route('users.store'), $request);
+
+        $response->assertSessionHasErrors('posisi_id');
+        $this->assertEquals('The selected posisi id is invalid.', session()->get('errors')->first('posisi_id'));
+    }
+
+    public function test_store_profile_field_join_date_is_required()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $request = $this->prepareRequest();
+        $request['join_date'] = null;
+
+        $response = $this->post(route('users.store'), $request);
+
+        $response->assertSessionHasErrors('join_date');
+        $this->assertEquals('The join date field is required.', session()->get('errors')->first('join_date'));
+    }
+
+    public function test_store_profile_field_join_date_is_date()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $request = $this->prepareRequest();
+        $request['join_date'] = 'asdadasd';
+
+        $response = $this->post(route('users.store'), $request);
+
+        $response->assertSessionHasErrors('join_date');
+        $this->assertEquals('The join date is not a valid date.', session()->get('errors')->first('join_date'));
+    }
+
+    public function test_store_profile_field_cuti_is_required()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $request = $this->prepareRequest();
+        $request['cuti'] = null;
+
+        $response = $this->post(route('users.store'), $request);
+
+        $response->assertSessionHasErrors('cuti');
+        $this->assertEquals('The cuti field is required.', session()->get('errors')->first('cuti'));
+    }
+
+    public function test_store_profile_field_cuti_is_integer()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $request = $this->prepareRequest();
+        $request['cuti'] = 'asdadasd';
+
+        $response = $this->post(route('users.store'), $request);
+
+        $response->assertSessionHasErrors('cuti');
+        $this->assertEquals('The cuti must be an integer.', session()->get('errors')->first('cuti'));
+    }
+
+    public function test_store_profile_field_salary_is_required()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $request = $this->prepareRequest();
+        $request['salary'] = null;
+
+        $response = $this->post(route('users.store'), $request);
+
+        $response->assertSessionHasErrors('salary');
+        $this->assertEquals('The salary field is required.', session()->get('errors')->first('salary'));
+    }
+
+    public function test_store_profile_field_salary_is_integer()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $request = $this->prepareRequest();
+        $request['salary'] = 'asdadasd';
+
+        $response = $this->post(route('users.store'), $request);
+
+        $response->assertSessionHasErrors('salary');
+        $this->assertEquals('The salary must be a number.', session()->get('errors')->first('salary'));
+    }
+
+    public function test_user_can_store_user_with_profile()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $request = $this->prepareRequest();
+        $request['uuid'] = 12345090909; // unique
+
+        $response = $this->post(route('users.store'), $request);
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('users.index'));
+        $response->assertSessionHas('toastr-success', 'User Successfully Added');
+
+        $this->assertDatabaseHas('users', [
+            'uuid' => $request['uuid'],
+            'name' => $request['name'],
+            'email' => $request['email'],
+        ]);
+        $this->assertDatabaseHas('user_profile', [
+            'user_id' => User::where('uuid', $request['uuid'])->first()->id,
+            'divisi_id' => $request['divisi_id'],
+            'posisi_id' => $request['posisi_id'],
+            'bank'                => $request['bank'],
+            'bank_account_number' => $request['bank_account_number'],
+            'join_date' => $request['join_date'],
+            'cuti' => $request['cuti'],
+            'salary' => $request['salary'],
+        ]);
     }
 }

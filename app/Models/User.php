@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Znck\Eloquent\Traits\BelongsToThrough;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, BelongsToThrough;
 
     /**
      * The attributes that are mass assignable.
@@ -49,8 +50,8 @@ class User extends Authenticatable
         return $this->hasMany(Divisi::class, 'created_by');
     }
 
-    public function divisi()
+    public function profile()
     {
-        return $this->belongsTo(Divisi::class, 'divisi_id');
+        return $this->hasOne(UserProfile::class, 'user_id');
     }
 }

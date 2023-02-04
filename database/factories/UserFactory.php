@@ -18,8 +18,8 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
+            'uuid' => '0101'.fake()->unique()->numberBetween(0,999999),
             'name' => fake()->name(),
-            'uuid' => '0101'.rand(3,9999),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password

@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Divisi;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -26,6 +27,11 @@ class PosisiFactory extends Factory
 
     private function getDivisiId()
     {
-        return Divisi::factory()->create()->id;
+        $divisi = Divisi::inRandomOrder()->first();
+        if($divisi) {
+            return $divisi->id;
+        }else {
+            return Divisi::factory()->create()->id;
+        }
     }
 }

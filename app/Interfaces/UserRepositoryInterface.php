@@ -4,6 +4,7 @@ namespace App\Interfaces;
 
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Interfaces\UserProfileRepositoryInterface;
 use App\Models\User;
 use Illuminate\Support\Collection;
 

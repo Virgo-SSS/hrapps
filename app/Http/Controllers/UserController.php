@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Interfaces\DivisiRepositoryInterface;
+use App\Interfaces\PosisiRepositoryInterface;
 use App\Interfaces\UserRepositoryInterface;
 use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
@@ -36,8 +37,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        $divisis = $this->divisiRepository->getDivisi();
-        return view('users.create', compact('divisis'));
+        $divisis = $this->divisiRepository->getDivisiWithoutEagerLoading();
+        return view('users.create', compact('divisis' ));
     }
 
     /**
@@ -48,7 +49,8 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
-        //
+        $this->repository->create($request);
+        return redirect()->route('users.index')->with('toastr-success', 'User Successfully Added');
     }
 
     /**

@@ -30,7 +30,7 @@
                     <select name="divisi_id" id="divisi_id" class="form-control mb-4">
                         <option value="" disabled selected>Select Divisi</option>
                         @foreach($divisis as $divisi)
-                            <option value="{{ $divisi->id }}" {{ ($divisi->id == $posisi->divisi_id) ? 'selected' : '' }}>{{ ucfirst($divisi->name) }}</option>
+                            <option value="{{ $divisi->id }}" @selected($divisi->id == $posisi->divisi_id) >{{ ucfirst($divisi->name) }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -38,7 +38,7 @@
                     <label for="is_active" class="mr-2">Status</label>
                     <label class="switch">
                         <input type="hidden" name="is_active" id="is_active" value="{{ $posisi->is_active }}">
-                        <input type="checkbox" id="status" onclick="changeValue(this)" {{ ($posisi->is_active) ? 'checked' : '' }}>
+                        <input type="checkbox" id="status" onclick="changeValue(this)" @checked($posisi->is_active)>
                         <span class="slider round"></span>
                     </label>
                 </div>

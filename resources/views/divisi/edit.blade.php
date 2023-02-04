@@ -29,7 +29,7 @@
                     <label for="is_active" class="mr-2">Status</label>
                     <label class="switch">
                         <input type="hidden" name="is_active" id="is_active" value="{{ $divisi->is_active }}">
-                        <input type="checkbox" id="status" onclick="changeValue(this)" {{ ($divisi->is_active) ? 'checked' : '' }}>
+                        <input type="checkbox" id="status" onclick="changeValue(this)" @checked($divisi->is_active)>
                         <span class="slider round"></span>
                     </label>
                 </div>

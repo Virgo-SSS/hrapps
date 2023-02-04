@@ -15,6 +15,6 @@ class DivisiSeeder extends Seeder
      */
     public function run()
     {
-        Divisi::factory()->create();
+        Divisi::factory(10)->create();
     }
 }

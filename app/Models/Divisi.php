@@ -37,4 +37,9 @@ class Divisi extends Model
     {
         return $this->hasMany(Posisi::class, 'divisi_id');
     }
+
+    public function userProfile()
+    {
+        return $this->hasMany(UserProfile::class, 'divisi_id');
+    }
 }

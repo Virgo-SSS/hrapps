@@ -15,6 +15,26 @@ class PosisiRepository implements PosisiRepositoryInterface
         return Posisi::with(['divisi'])->get();
     }
 
+    public function getPosisiWithoutEagerLoading(): Collection
+    {
+        return Posisi::all();
+    }
+
+    public function getPosisiById(int $id): Posisi
+    {
+        return Posisi::with(['divisi'])->findOrFail($id);
+    }
+
+    public function getPosisiByIdWithoutEagerLoading(int $id): Posisi
+    {
+        return Posisi::findOrFail($id);
+    }
+
+    public function getPosisiByDivisi(int $divisi_id): Collection
+    {
+        return Posisi::where('divisi_id', $divisi_id)->get();
+    }
+
     public function store(StorePosisiRequest $request): void
     {
         Posisi::create($request->validated());

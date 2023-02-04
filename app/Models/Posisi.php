@@ -21,4 +21,9 @@ class Posisi extends Model
     {
         return $this->belongsTo(Divisi::class, 'divisi_id');
     }
+
+    public function userProfile()
+    {
+        return $this->hasMany(UserProfile::class, 'posisi_id');
+    }
 }

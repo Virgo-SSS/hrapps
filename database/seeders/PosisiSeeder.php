@@ -15,6 +15,6 @@ class PosisiSeeder extends Seeder
      */
     public function run()
     {
-        Posisi::factory()->create();
+        Posisi::factory(20)->create();
     }
 }
