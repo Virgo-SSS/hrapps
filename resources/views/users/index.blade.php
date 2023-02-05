@@ -38,7 +38,7 @@
                         <td>{{ $user->join_date }}</td>
                         <td>
                             <a href="{{ route('users.edit', $user->id) }}"><i class="fa fa-pencil"></i></a> |
-                            <a href="#" onclick="deleteItem('#deleteUser-{{ $user->id }}', '{{ $user->name }}')"><i class="fa fa-trash" style="color: red;"></i></a>
+                            <a href="#" onclick="event.preventDefault();deleteItem('#deleteUser-{{ $user->id }}', '{{ $user->name }}')"><i class="fa fa-trash" style="color: red;"></i></a>
                             <form action="{{ route('users.destroy', $user->id) }}" method="POST" id="deleteUser-{{ $user->id }}" style="display: inline-block;">
                                 @csrf
                                 @method('DELETE')
@@ -54,7 +54,9 @@
 @section('scripts')
     <script>
         $(document).ready( function () {
-            $('#usersTable').DataTable();
+            $('#usersTable').DataTable({
+                "pageLength": 25,
+            });
         } );
     </script>
 @endsection

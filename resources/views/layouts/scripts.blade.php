@@ -23,10 +23,6 @@
 <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
 
 <script>
-    $(document).on('click', 'a', function(event) {
-        event.preventDefault();
-    });
-
     @if(Session::has('toastr-success'))
         toastr.success("{{ Session::get('toastr-success') }}")
     @endif
