@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\CheckBank;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class UpdateUserRequest extends FormRequest
 {
@@ -13,7 +16,7 @@ class UpdateUserRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return Auth::check();
     }
 
     /**
@@ -24,7 +27,26 @@ class UpdateUserRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'uuid'                  => ['required', Rule::unique('users', 'uuid')->ignore($this->route('user')->id)],
+            'name'                  => 'required|string|max:255',
+            'email'                 => ['required','email',Rule::unique('users', 'email')->ignore($this->route('user')->id)],
+
+            'bank'                  => ['required','integer', new CheckBank()],
+            'bank_account_number'   => 'required|numeric',
+
+            'divisi_id'             => 'required|integer|exists:divisi,id',
+            'posisi_id'             => 'required|integer|exists:posisi,id',
+            'join_date'             => 'required|date',
+
+            'cuti'                  => 'required|integer',
+            'salary'                => 'required|numeric',
         ];
+    }
+
+    public function prepareForValidation()
+    {
+        $this->merge([
+            'salary' => str_replace('.', '', $this->salary),
+        ]);
     }
 }

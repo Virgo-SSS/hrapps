@@ -18,6 +18,8 @@
 <link rel="stylesheet" href="{{ asset('assets/css/styles.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/css/responsive.css') }}">
 <link rel="stylesheet" href="{{ asset('toastr/toastr.min.css') }}">
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.1/dist/sweetalert2.min.css" rel="stylesheet">
+
 
 
 

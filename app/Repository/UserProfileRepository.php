@@ -28,4 +28,17 @@ class UserProfileRepository implements UserProfileRepositoryInterface
             'salary'              => $request['salary'],
         ]);
     }
+
+    public function update(User $user, array $request): void
+    {
+        $user->profile()->update([
+            'divisi_id'           => $request['divisi_id'],
+            'posisi_id'           => $request['posisi_id'],
+            'bank'                => $request['bank'],
+            'bank_account_number' => $request['bank_account_number'],
+            'join_date'           => $request['join_date'],
+            'cuti'                => $request['cuti'],
+            'salary'              => $request['salary'],
+        ]);
+    }
 }

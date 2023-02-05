@@ -72,7 +72,8 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        //
+        $divisis = $this->divisiRepository->getDivisiWithoutEagerLoading();
+        return view('users.edit', compact('user', 'divisis'));
     }
 
     /**
@@ -84,7 +85,8 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user)
     {
-        //
+        $this->repository->update($request, $user);
+        return redirect()->route('users.index')->with('toastr-success', 'User Successfully Updated');
     }
 
     /**
@@ -95,6 +97,7 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        $this->repository->delete($user);
+        return redirect()->route('users.index')->with('toastr-success', 'User Successfully Deleted');
     }
 }

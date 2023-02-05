@@ -36,7 +36,13 @@ class UserRepository implements UserRepositoryInterface
 
     public function update(UpdateUserRequest $request, User $user): void
     {
+        $user->update([
+            'uuid'      => $request->uuid,
+            'name'      => $request->name,
+            'email'     => $request->email,
+        ]);
 
+        app(UserProfileRepositoryInterface::class)->update($user, $request->all());
     }
 
     public function delete(User $user): void

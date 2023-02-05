@@ -37,9 +37,9 @@
                         <td>{{ $user->cuti }} Days</td>
                         <td>{{ $user->join_date }}</td>
                         <td>
-                            <a href="#" class="#"><i class="fa fa-pencil"></i></a> |
-                            <a href="#"><i class="fa fa-trash" style="color: red;"></i></a>
-                            <form action="#" method="POST" style="display: inline-block;">
+                            <a href="{{ route('users.edit', $user->id) }}"><i class="fa fa-pencil"></i></a> |
+                            <a href="#" onclick="deleteItem('#deleteUser-{{ $user->id }}', '{{ $user->name }}')"><i class="fa fa-trash" style="color: red;"></i></a>
+                            <form action="{{ route('users.destroy', $user->id) }}" method="POST" id="deleteUser-{{ $user->id }}" style="display: inline-block;">
                                 @csrf
                                 @method('DELETE')
                             </form>
