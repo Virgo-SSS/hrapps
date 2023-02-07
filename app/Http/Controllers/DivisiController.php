@@ -6,9 +6,8 @@ use App\Interfaces\DivisiRepositoryInterface;
 use App\Models\Divisi;
 use App\Http\Requests\StoreDivisiRequest;
 use App\Http\Requests\UpdateDivisiRequest;
-use App\Services\DivisiService;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class DivisiController extends Controller
 {
@@ -19,81 +18,40 @@ class DivisiController extends Controller
         $this->Repository = $Repository;
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function index(): View
     {
         $divisis = $this->Repository->getDivisi();
         return view('divisi.index', compact('divisis'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreDivisiRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreDivisiRequest $request)
+    public function store(StoreDivisiRequest $request): RedirectResponse
     {
         $this->Repository->store($request);
         return redirect()->route('divisi.index')->with('toastr-success', 'Divisi Successfully Created');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Divisi  $divisi
-     * @return \Illuminate\Http\Response
-     */
     public function show(Divisi $divisi)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Divisi  $divisi
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Divisi $divisi)
+    public function edit(Divisi $divisi): View
     {
         return view('divisi.edit', compact('divisi'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateDivisiRequest  $request
-     * @param  \App\Models\Divisi  $divisi
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateDivisiRequest $request, Divisi $divisi)
+    public function update(UpdateDivisiRequest $request, Divisi $divisi): RedirectResponse
     {
         $this->Repository->update($request, $divisi);
         return redirect()->route('divisi.index')->with('toastr-success', 'Divisi Successfully Updated');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Divisi  $divisi
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Divisi $divisi)
+    public function destroy(Divisi $divisi): RedirectResponse
     {
         $this->Repository->delete($divisi);
         return redirect()->route('divisi.index')->with('toastr-success', 'Divisi Successfully Deleted');

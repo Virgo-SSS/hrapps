@@ -23,7 +23,7 @@ class UserTest extends TestCase
         return $request;
     }
 
-    public function test_user_cant_go_to_user_page_if_not_authenticated()
+    public function test_user_cant_go_to_user_page_if_not_authenticated(): void
     {
         $response = $this->get(route('users.index'));
 
@@ -31,7 +31,7 @@ class UserTest extends TestCase
         $response->assertRedirect(route('login'));
     }
 
-    public function test_user_can_go_to_user_page_if_authenticated()
+    public function test_user_can_go_to_user_page_if_authenticated(): void
     {
         $user = User::factory()->create();
         $response = $this->actingAs($user)->get(route('users.index'));
@@ -40,7 +40,7 @@ class UserTest extends TestCase
         $response->assertSeeText('Data Users');
     }
 
-    public function test_user_cant_goto_user_create_page_if_not_authenticated()
+    public function test_user_cant_goto_user_create_page_if_not_authenticated(): void
     {
         $response = $this->get(route('users.create'));
 
@@ -48,7 +48,7 @@ class UserTest extends TestCase
         $response->assertRedirect(route('login'));
     }
 
-    public function test_user_can_go_to_user_create_page_if_authenticated()
+    public function test_user_can_go_to_user_create_page_if_authenticated(): void
     {
         $user = User::factory()->create();
         $response = $this->actingAs($user)->get(route('users.create'));
@@ -57,7 +57,7 @@ class UserTest extends TestCase
         $response->assertSeeText('Create User');
     }
 
-    public function test_store_user_field_uuid_is_required()
+    public function test_store_user_field_uuid_is_required(): void
     {
         $user = User::factory()->create();
 
@@ -70,7 +70,7 @@ class UserTest extends TestCase
         $this->assertEquals('The uuid field is required.', session()->get('errors')->first('uuid'));
     }
 
-    public function test_store_user_field_uuid_is_unique()
+    public function test_store_user_field_uuid_is_unique(): void
     {
         $user = User::factory()->create();
 
@@ -83,7 +83,7 @@ class UserTest extends TestCase
         $this->assertEquals('The uuid has already been taken.', session()->get('errors')->first('uuid'));
     }
 
-    public function test_store_user_field_name_is_required()
+    public function test_store_user_field_name_is_required(): void
     {
         $user = User::factory()->create();
         $request = $this->prepareRequest();
@@ -96,7 +96,7 @@ class UserTest extends TestCase
 
     }
 
-    public function test_store_user_field_name_must_be_string()
+    public function test_store_user_field_name_must_be_string(): void
     {
         $user = User::factory()->create();
         $request = $this->prepareRequest();;
@@ -108,7 +108,7 @@ class UserTest extends TestCase
         $this->assertEquals('The name must be a string.', session()->get('errors')->first('name'));
     }
 
-    public function test_store_user_field_name_max_255()
+    public function test_store_user_field_name_max_255(): void
     {
         $user = User::factory()->create();
 
@@ -121,7 +121,7 @@ class UserTest extends TestCase
         $this->assertEquals('The name must not be greater than 255 characters.', session()->get('errors')->first('name'));
     }
 
-    public function test_store_user_field_password_is_required()
+    public function test_store_user_field_password_is_required(): void
     {
         $user = User::factory()->create();
 
@@ -134,7 +134,7 @@ class UserTest extends TestCase
         $this->assertEquals('The password field is required.', session()->get('errors')->first('password'));
     }
 
-    public function test_store_user_field_password_min_6()
+    public function test_store_user_field_password_min_6(): void
     {
         $user = User::factory()->create();
 
@@ -147,7 +147,7 @@ class UserTest extends TestCase
         $this->assertEquals('The password must be at least 6 characters.', session()->get('errors')->first('password'));
     }
 
-    public function test_store_user_field_password_must_string()
+    public function test_store_user_field_password_must_string(): void
     {
         $user = User::factory()->create();
         $request = $this->prepareRequest();
@@ -159,7 +159,7 @@ class UserTest extends TestCase
         $this->assertEquals('The password must be a string.', session()->get('errors')->first('password'));
     }
 
-    public function test_store_user_field_email_is_required()
+    public function test_store_user_field_email_is_required(): void
     {
         $user = User::factory()->create();
         $request = $this->prepareRequest();
@@ -171,7 +171,7 @@ class UserTest extends TestCase
         $this->assertEquals('The email field is required.', session()->get('errors')->first('email'));
     }
 
-    public function test_store_profile_field_bank_is_required()
+    public function test_store_profile_field_bank_is_required(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -185,7 +185,7 @@ class UserTest extends TestCase
         $this->assertEquals('The bank field is required.', session()->get('errors')->first('bank'));
     }
 
-    public function test_store_profile_field_bank_should_be_exists_in_config_bank()
+    public function test_store_profile_field_bank_should_be_exists_in_config_bank(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -198,7 +198,7 @@ class UserTest extends TestCase
         $this->assertEquals('The bank must be a valid bank.', session()->get('errors')->first('bank'));
     }
 
-    public function test_store_profile_field_bank_account_number_is_required()
+    public function test_store_profile_field_bank_account_number_is_required(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -212,7 +212,7 @@ class UserTest extends TestCase
         $this->assertEquals('The bank account number field is required.', session()->get('errors')->first('bank_account_number'));
     }
 
-    public function test_store_profile_field_bank_account_number_should_be_numeric()
+    public function test_store_profile_field_bank_account_number_should_be_numeric(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -226,7 +226,7 @@ class UserTest extends TestCase
         $this->assertEquals('The bank account number must be a number.', session()->get('errors')->first('bank_account_number'));
     }
 
-    public function test_store_profile_field_divisi_id_is_required()
+    public function test_store_profile_field_divisi_id_is_required(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -240,7 +240,7 @@ class UserTest extends TestCase
         $this->assertEquals('The divisi id field is required.', session()->get('errors')->first('divisi_id'));
     }
 
-    public function test_store_profile_field_divisi_id_is_integer()
+    public function test_store_profile_field_divisi_id_is_integer(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -254,7 +254,7 @@ class UserTest extends TestCase
         $this->assertEquals('The divisi id must be an integer.', session()->get('errors')->first('divisi_id'));
     }
 
-    public function test_store_profile_field_divisi_id_should_be_exists_in_divisi_table()
+    public function test_store_profile_field_divisi_id_should_be_exists_in_divisi_table(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -268,7 +268,7 @@ class UserTest extends TestCase
         $this->assertEquals('The selected divisi id is invalid.', session()->get('errors')->first('divisi_id'));
     }
 
-    public function test_store_profile_field_posisi_id_is_required()
+    public function test_store_profile_field_posisi_id_is_required(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -282,7 +282,7 @@ class UserTest extends TestCase
         $this->assertEquals('The posisi id field is required.', session()->get('errors')->first('posisi_id'));
     }
 
-    public function test_store_profile_field_posisi_id_is_integer()
+    public function test_store_profile_field_posisi_id_is_integer(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -296,7 +296,7 @@ class UserTest extends TestCase
         $this->assertEquals('The posisi id must be an integer.', session()->get('errors')->first('posisi_id'));
     }
 
-    public function test_store_profile_field_posisi_id_should_be_exists_in_posisi_table()
+    public function test_store_profile_field_posisi_id_should_be_exists_in_posisi_table(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -310,7 +310,7 @@ class UserTest extends TestCase
         $this->assertEquals('The selected posisi id is invalid.', session()->get('errors')->first('posisi_id'));
     }
 
-    public function test_store_profile_field_join_date_is_required()
+    public function test_store_profile_field_join_date_is_required(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -324,7 +324,7 @@ class UserTest extends TestCase
         $this->assertEquals('The join date field is required.', session()->get('errors')->first('join_date'));
     }
 
-    public function test_store_profile_field_join_date_is_date()
+    public function test_store_profile_field_join_date_is_date(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -338,7 +338,7 @@ class UserTest extends TestCase
         $this->assertEquals('The join date is not a valid date.', session()->get('errors')->first('join_date'));
     }
 
-    public function test_store_profile_field_cuti_is_required()
+    public function test_store_profile_field_cuti_is_required(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -352,7 +352,7 @@ class UserTest extends TestCase
         $this->assertEquals('The cuti field is required.', session()->get('errors')->first('cuti'));
     }
 
-    public function test_store_profile_field_cuti_is_integer()
+    public function test_store_profile_field_cuti_is_integer(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -366,7 +366,7 @@ class UserTest extends TestCase
         $this->assertEquals('The cuti must be an integer.', session()->get('errors')->first('cuti'));
     }
 
-    public function test_store_profile_field_salary_is_required()
+    public function test_store_profile_field_salary_is_required(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -380,7 +380,7 @@ class UserTest extends TestCase
         $this->assertEquals('The salary field is required.', session()->get('errors')->first('salary'));
     }
 
-    public function test_store_profile_field_salary_is_integer()
+    public function test_store_profile_field_salary_is_integer(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -394,7 +394,7 @@ class UserTest extends TestCase
         $this->assertEquals('The salary must be a number.', session()->get('errors')->first('salary'));
     }
 
-    public function test_user_can_store_user_with_profile()
+    public function test_user_can_store_user_with_profile(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -425,7 +425,7 @@ class UserTest extends TestCase
         ]);
     }
 
-    public function test_cant_update_user_if_not_authenticated()
+    public function test_cant_update_user_if_not_authenticated(): void
     {
         $user = User::factory()->create();
 
@@ -438,7 +438,7 @@ class UserTest extends TestCase
         $response->assertRedirect(route('login'));
     }
 
-    public function test_update_user_field_uuid_is_required()
+    public function test_update_user_field_uuid_is_required(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -452,7 +452,7 @@ class UserTest extends TestCase
         $this->assertEquals('The uuid field is required.', session()->get('errors')->first('uuid'));
     }
 
-    public function test_update_user_field_uuid_is_unique()
+    public function test_update_user_field_uuid_is_unique(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -467,7 +467,7 @@ class UserTest extends TestCase
         $this->assertEquals('The uuid has already been taken.', session()->get('errors')->first('uuid'));
     }
 
-    public function test_update_user_field_name_is_required()
+    public function test_update_user_field_name_is_required(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -481,7 +481,7 @@ class UserTest extends TestCase
         $this->assertEquals('The name field is required.', session()->get('errors')->first('name'));
     }
 
-    public function test_update_user_field_name_is_string()
+    public function test_update_user_field_name_is_string(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -495,7 +495,7 @@ class UserTest extends TestCase
         $this->assertEquals('The name must be a string.', session()->get('errors')->first('name'));
     }
 
-    public function test_update_user_field_email_is_required()
+    public function test_update_user_field_email_is_required(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -509,7 +509,7 @@ class UserTest extends TestCase
         $this->assertEquals('The email field is required.', session()->get('errors')->first('email'));
     }
 
-    public function test_update_user_field_email_is_unique()
+    public function test_update_user_field_email_is_unique(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -524,7 +524,7 @@ class UserTest extends TestCase
         $this->assertEquals('The email has already been taken.', session()->get('errors')->first('email'));
     }
 
-    public function test_update_user_field_email_is_email()
+    public function test_update_user_field_email_is_email(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -538,7 +538,7 @@ class UserTest extends TestCase
         $this->assertEquals('The email must be a valid email address.', session()->get('errors')->first('email'));
     }
 
-    public function test_update_user_field_bank_is_required()
+    public function test_update_user_field_bank_is_required(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -552,7 +552,7 @@ class UserTest extends TestCase
         $this->assertEquals('The bank field is required.', session()->get('errors')->first('bank'));
     }
 
-    public function test_update_user_field_bank_is_integer()
+    public function test_update_user_field_bank_is_integer(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -566,7 +566,7 @@ class UserTest extends TestCase
         $this->assertEquals('The bank must be an integer.', session()->get('errors')->first('bank'));
     }
 
-    public function test_update_user_field_bank_must_exists()
+    public function test_update_user_field_bank_must_exists(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -580,7 +580,7 @@ class UserTest extends TestCase
         $this->assertEquals('The bank must be a valid bank.', session()->get('errors')->first('bank'));
     }
 
-    public function test_update_user_field_bank_account_number_is_required()
+    public function test_update_user_field_bank_account_number_is_required(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -594,7 +594,7 @@ class UserTest extends TestCase
         $this->assertEquals('The bank account number field is required.', session()->get('errors')->first('bank_account_number'));
     }
 
-    public function test_update_user_field_bank_account_number_is_numeric()
+    public function test_update_user_field_bank_account_number_is_numeric(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -608,7 +608,7 @@ class UserTest extends TestCase
         $this->assertEquals('The bank account number must be a number.', session()->get('errors')->first('bank_account_number'));
     }
 
-    public function test_update_user_field_divisi_id_is_required()
+    public function test_update_user_field_divisi_id_is_required(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -622,7 +622,7 @@ class UserTest extends TestCase
         $this->assertEquals('The divisi id field is required.', session()->get('errors')->first('divisi_id'));
     }
 
-    public function test_update_user_field_divisi_id_is_integer()
+    public function test_update_user_field_divisi_id_is_integer(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -636,7 +636,7 @@ class UserTest extends TestCase
         $this->assertEquals('The divisi id must be an integer.', session()->get('errors')->first('divisi_id'));
     }
 
-    public function test_update_user_field_divisi_id_is_exists()
+    public function test_update_user_field_divisi_id_is_exists(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -650,7 +650,7 @@ class UserTest extends TestCase
         $this->assertEquals('The selected divisi id is invalid.', session()->get('errors')->first('divisi_id'));
     }
 
-    public function test_update_user_field_posisi_id_is_required()
+    public function test_update_user_field_posisi_id_is_required(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -664,7 +664,7 @@ class UserTest extends TestCase
         $this->assertEquals('The posisi id field is required.', session()->get('errors')->first('posisi_id'));
     }
 
-    public function test_update_user_field_posisi_id_is_integer()
+    public function test_update_user_field_posisi_id_is_integer(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -678,7 +678,7 @@ class UserTest extends TestCase
         $this->assertEquals('The posisi id must be an integer.', session()->get('errors')->first('posisi_id'));
     }
 
-    public function test_update_user_field_posisi_id_is_exists()
+    public function test_update_user_field_posisi_id_is_exists(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -692,7 +692,7 @@ class UserTest extends TestCase
         $this->assertEquals('The selected posisi id is invalid.', session()->get('errors')->first('posisi_id'));
     }
 
-    public function test_update_user_field_join_date_is_required()
+    public function test_update_user_field_join_date_is_required(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -706,7 +706,7 @@ class UserTest extends TestCase
         $this->assertEquals('The join date field is required.', session()->get('errors')->first('join_date'));
     }
 
-    public function test_update_user_field_join_date_is_date()
+    public function test_update_user_field_join_date_is_date(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -720,7 +720,7 @@ class UserTest extends TestCase
         $this->assertEquals('The join date is not a valid date.', session()->get('errors')->first('join_date'));
     }
 
-    public function test_update_user_field_cuti_is_required()
+    public function test_update_user_field_cuti_is_required(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -734,7 +734,7 @@ class UserTest extends TestCase
         $this->assertEquals('The cuti field is required.', session()->get('errors')->first('cuti'));
     }
 
-    public function test_update_user_field_cuti_is_integer()
+    public function test_update_user_field_cuti_is_integer(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -748,7 +748,7 @@ class UserTest extends TestCase
         $this->assertEquals('The cuti must be an integer.', session()->get('errors')->first('cuti'));
     }
 
-    public function test_update_user_field_salary_is_required()
+    public function test_update_user_field_salary_is_required(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -762,7 +762,7 @@ class UserTest extends TestCase
         $this->assertEquals('The salary field is required.', session()->get('errors')->first('salary'));
     }
 
-    public function test_update_user_field_salary_is_numeric()
+    public function test_update_user_field_salary_is_numeric(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -776,7 +776,7 @@ class UserTest extends TestCase
         $this->assertEquals('The salary must be a number.', session()->get('errors')->first('salary'));
     }
 
-    public function test_can_update_user_if_authenticated()
+    public function test_can_update_user_if_authenticated(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -810,7 +810,7 @@ class UserTest extends TestCase
         ]);
     }
 
-    public function test_cant_delete_user_if_not_authenticated()
+    public function test_cant_delete_user_if_not_authenticated(): void
     {
         $user = User::factory()->create();
 
@@ -820,7 +820,7 @@ class UserTest extends TestCase
         $response->assertRedirect(route('login'));
     }
 
-    public function test_can_delete_user_if_authenticated()
+    public function test_can_delete_user_if_authenticated(): void
     {
         $user = User::factory()->create();
         UserProfile::factory()->create([

@@ -10,7 +10,7 @@ use Tests\TestCase;
 
 class DivisiTest extends TestCase
 {
-    public function test_user_cant_access_divisi_page_if_user_unauthenticated()
+    public function test_user_cant_access_divisi_page_if_user_unauthenticated(): void
     {
         $response = $this->get(route('divisi.index'));
 
@@ -18,7 +18,7 @@ class DivisiTest extends TestCase
         $response->assertRedirect(route('login'));
     }
 
-    public function test_user_can_access_divisi_page_if_user_authenticated()
+    public function test_user_can_access_divisi_page_if_user_authenticated(): void
     {
         $user  = User::factory()->create();
         $this->actingAs($user);
@@ -29,7 +29,7 @@ class DivisiTest extends TestCase
         $response->assertSeeText('Data Divisi');
     }
 
-    public function test_user_cant_create_divisi_if_user_unauthenticated()
+    public function test_user_cant_create_divisi_if_user_unauthenticated(): void
     {
         $response = $this->post(route('divisi.store'), [
             'nama' => 'Divisi 1',
@@ -42,7 +42,7 @@ class DivisiTest extends TestCase
         ]);
     }
 
-    public function test_store_divisi_field_name_required()
+    public function test_store_divisi_field_name_required(): void
     {
         $user  = User::factory()->create();
         $this->actingAs($user);
@@ -55,7 +55,7 @@ class DivisiTest extends TestCase
         $this->assertEquals('The name field is required.', session()->get('errors')->first('name'));
     }
 
-    public function test_store_divisi_field_name_cant_has_duplicate_name()
+    public function test_store_divisi_field_name_cant_has_duplicate_name(): void
     {
         $user  = User::factory()->create();
         $this->actingAs($user);
@@ -70,7 +70,7 @@ class DivisiTest extends TestCase
         $this->assertEquals('The name has already been taken.', session()->get('errors')->first('name'));
     }
 
-    public function test_store_divisi_field_name_cant_more_than_255()
+    public function test_store_divisi_field_name_cant_more_than_255(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -83,7 +83,7 @@ class DivisiTest extends TestCase
         $this->assertEquals('The name must not be greater than 255 characters.', session()->get('errors')->first('name'));
     }
 
-    public function test_store_divisi_field_name_should_be_string()
+    public function test_store_divisi_field_name_should_be_string(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -96,7 +96,7 @@ class DivisiTest extends TestCase
         $this->assertEquals('The name must be a string.', session()->get('errors')->first('name'));
     }
 
-    public function test_user_can_create_divisi_if_user_authenticated()
+    public function test_user_can_create_divisi_if_user_authenticated(): void
     {
         $user  = User::factory()->create();
         $this->actingAs($user);
@@ -113,7 +113,7 @@ class DivisiTest extends TestCase
         ]);
     }
 
-    public function test_user_cant_update_divisi_if_user_unauthenticated()
+    public function test_user_cant_update_divisi_if_user_unauthenticated(): void
     {
         $divisi = Divisi::factory()->create();
 
@@ -128,7 +128,7 @@ class DivisiTest extends TestCase
         ]);
     }
 
-    public function test_update_divisi_field_name_required()
+    public function test_update_divisi_field_name_required(): void
     {
         $user  = User::factory()->create();
         $this->actingAs($user);
@@ -144,7 +144,7 @@ class DivisiTest extends TestCase
         $this->assertEquals('The name field is required.', session()->get('errors')->first('name'));
     }
 
-    public function test_update_divisi_field_is_active_required()
+    public function test_update_divisi_field_is_active_required(): void
     {
         $user  = User::factory()->create();
         $this->actingAs($user);
@@ -160,7 +160,7 @@ class DivisiTest extends TestCase
         $this->assertEquals('The is active field is required.', session()->get('errors')->first('is_active'));
     }
 
-    public function test_update_divisi_field_is_active_must_boolean()
+    public function test_update_divisi_field_is_active_must_boolean(): void
     {
         $user  = User::factory()->create();
         $this->actingAs($user);
@@ -176,7 +176,7 @@ class DivisiTest extends TestCase
         $this->assertEquals('The is active field must be true or false.', session()->get('errors')->first('is_active'));
     }
 
-    public function test_update_divisi_field_name_cant_has_duplicate_name()
+    public function test_update_divisi_field_name_cant_has_duplicate_name(): void
     {
         $user  = User::factory()->create();
         $this->actingAs($user);
@@ -193,7 +193,7 @@ class DivisiTest extends TestCase
         $this->assertEquals('The name has already been taken.', session()->get('errors')->first('name'));
     }
 
-    public function test_update_divisi_field_name_cant_more_than_255()
+    public function test_update_divisi_field_name_cant_more_than_255(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -208,7 +208,7 @@ class DivisiTest extends TestCase
         $this->assertEquals('The name must not be greater than 255 characters.', session()->get('errors')->first('name'));
     }
 
-    public function test_update_divisi_field_name_should_be_string()
+    public function test_update_divisi_field_name_should_be_string(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -222,7 +222,7 @@ class DivisiTest extends TestCase
         $this->assertEquals('The name must be a string.', session()->get('errors')->first('name'));
     }
 
-    public function test_user_can_update_name_divisi_if_user_authenticated()
+    public function test_user_can_update_name_divisi_if_user_authenticated(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -242,7 +242,7 @@ class DivisiTest extends TestCase
         ]);
     }
 
-    public function test_user_can_update_is_active_if_user_authenticated()
+    public function test_user_can_update_is_active_if_user_authenticated(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -263,7 +263,7 @@ class DivisiTest extends TestCase
         ]);
     }
 
-    public function test_user_cant_delete_divisi_if_user_unauthenticated()
+    public function test_user_cant_delete_divisi_if_user_unauthenticated(): void
     {
         $divisi = Divisi::factory()->create();
 
@@ -276,7 +276,7 @@ class DivisiTest extends TestCase
         ]);
     }
 
-    public function test_user_can_delete_divisi_if_user_authenticated()
+    public function test_user_can_delete_divisi_if_user_authenticated(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);

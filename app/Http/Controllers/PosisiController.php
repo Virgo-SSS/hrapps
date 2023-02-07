@@ -8,6 +8,8 @@ use App\Models\Posisi;
 use App\Http\Requests\StorePosisiRequest;
 use App\Http\Requests\UpdatePosisiRequest;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class PosisiController extends Controller
 {
@@ -20,83 +22,43 @@ class PosisiController extends Controller
         $this->divisiRepository = $divisiRepository;
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function index(): View
     {
         $posisis = $this->Repository->getPosisi();
         $divisis = $this->divisiRepository->getDivisiWithoutEagerLoading();
         return view('posisi.index', compact('posisis','divisis'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StorePosisiRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StorePosisiRequest $request)
+    public function store(StorePosisiRequest $request): RedirectResponse
     {
         $this->Repository->store($request);
         return redirect()->route('posisi.index')->with('toastr-success', 'Posisi Successfully Created');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Posisi  $posisi
-     * @return \Illuminate\Http\Response
-     */
     public function show(Posisi $posisi)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Posisi  $posisi
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Posisi $posisi)
+    public function edit(Posisi $posisi): View
     {
         $divisis = $this->divisiRepository->getDivisiWithoutEagerLoading();
         return view('posisi.edit', compact('posisi','divisis'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdatePosisiRequest  $request
-     * @param  \App\Models\Posisi  $posisi
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdatePosisiRequest $request, Posisi $posisi)
+    public function update(UpdatePosisiRequest $request, Posisi $posisi): RedirectResponse
     {
         $this->Repository->update($request, $posisi);
         return redirect()->route('posisi.index')->with('toastr-success', 'Posisi Successfully Updated');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Posisi  $posisi
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Posisi $posisi)
+
+    public function destroy(Posisi $posisi): RedirectResponse
     {
         $this->Repository->delete($posisi);
         return redirect()->route('posisi.index')->with('toastr-success', 'Posisi Successfully Deleted');

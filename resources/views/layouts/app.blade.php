@@ -36,6 +36,7 @@
                     @yield('content')
                 </div>
             </div>
+            @include('layouts.footer')
         </div>
         @include('layouts.settings')
     @endif

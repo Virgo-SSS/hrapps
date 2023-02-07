@@ -10,7 +10,7 @@ use Tests\TestCase;
 
 class HomeTest extends TestCase
 {
-    public function test_can_go_to_home_page_if_user_authenticated()
+    public function test_can_go_to_home_page_if_user_authenticated(): void
     {
         $user = User::factory()->create();
         UserProfile::factory()->create([
@@ -23,7 +23,7 @@ class HomeTest extends TestCase
         $response->assertSeeText('HELLO '.strtoupper($user->name));
     }
 
-    public function test_can_not_go_to_home_page_if_user_not_authenticated()
+    public function test_can_not_go_to_home_page_if_user_not_authenticated(): void
     {
         $response = $this->get(route('home'));
 

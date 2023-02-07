@@ -11,7 +11,7 @@ use Tests\TestCase;
 
 class PosisiTest extends TestCase
 {
-    public function test_user_cant_go_to_posisi_page_if_unauthenticated()
+    public function test_user_cant_go_to_posisi_page_if_unauthenticated(): void
     {
         $response = $this->get(route('posisi.index'));
 
@@ -19,7 +19,7 @@ class PosisiTest extends TestCase
         $response->assertRedirect(route('login'));
     }
 
-    public function test_user_can_go_to_posisi_page_if_authenticated()
+    public function test_user_can_go_to_posisi_page_if_authenticated(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -31,7 +31,7 @@ class PosisiTest extends TestCase
         $response->assertSeeText('Data Posisi');
     }
 
-    public function test_user_cant_store_posisi_if_unauthenticated()
+    public function test_user_cant_store_posisi_if_unauthenticated(): void
     {
         $response = $this->post(route('posisi.store'), [
             'name' => 'Posisi 1',
@@ -42,7 +42,7 @@ class PosisiTest extends TestCase
         $response->assertRedirect(route('login'));
     }
 
-    public function test_store_posisi_field_name_required()
+    public function test_store_posisi_field_name_required(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -57,7 +57,7 @@ class PosisiTest extends TestCase
         $this->assertEquals('The name field is required.', session()->get('errors')->first('name'));
     }
 
-    public function test_store_posisi_field_name_max_255()
+    public function test_store_posisi_field_name_max_255(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -72,7 +72,7 @@ class PosisiTest extends TestCase
         $this->assertEquals('The name must not be greater than 255 characters.', session()->get('errors')->first('name'));
     }
 
-    public function test_store_posisi_field_name_must_be_string()
+    public function test_store_posisi_field_name_must_be_string(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -87,7 +87,7 @@ class PosisiTest extends TestCase
         $this->assertEquals('The name must be a string.', session()->get('errors')->first('name'));
     }
 
-    public function test_store_posisi_field_divisi_required()
+    public function test_store_posisi_field_divisi_required(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -102,7 +102,7 @@ class PosisiTest extends TestCase
         $this->assertEquals('The divisi id field is required.', session()->get('errors')->first('divisi_id'));
     }
 
-    public function test_store_posisi_field_divisi_exist_at_database()
+    public function test_store_posisi_field_divisi_exist_at_database(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -117,7 +117,7 @@ class PosisiTest extends TestCase
         $this->assertEquals('The selected divisi id is invalid.', session()->get('errors')->first('divisi_id'));
     }
 
-    public function test_store_posisi_field_divisi_must_be_integer()
+    public function test_store_posisi_field_divisi_must_be_integer(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -132,7 +132,7 @@ class PosisiTest extends TestCase
         $this->assertEquals('The divisi id must be an integer.', session()->get('errors')->first('divisi_id'));
     }
 
-    public function test_user_can_store_posisi_if_authenticated()
+    public function test_user_can_store_posisi_if_authenticated(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -152,7 +152,7 @@ class PosisiTest extends TestCase
         ]);
     }
 
-    public function test_user_cant_update_posisi_if_unauthenticated()
+    public function test_user_cant_update_posisi_if_unauthenticated(): void
     {
         $response = $this->put(route('posisi.update', 1), [
             'name' => 'Posisi 1',
@@ -163,7 +163,7 @@ class PosisiTest extends TestCase
         $response->assertRedirect(route('login'));
     }
 
-    public function test_update_posisi_field_name_required()
+    public function test_update_posisi_field_name_required(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -181,7 +181,7 @@ class PosisiTest extends TestCase
         $this->assertEquals('The name field is required.', session()->get('errors')->first('name'));
     }
 
-    public function test_update_posisi_field_name_max_255()
+    public function test_update_posisi_field_name_max_255(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -199,7 +199,7 @@ class PosisiTest extends TestCase
         $this->assertEquals('The name must not be greater than 255 characters.', session()->get('errors')->first('name'));
     }
 
-    public function test_update_posisi_field_name_must_be_string()
+    public function test_update_posisi_field_name_must_be_string(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -217,7 +217,7 @@ class PosisiTest extends TestCase
         $this->assertEquals('The name must be a string.', session()->get('errors')->first('name'));
     }
 
-    public function test_update_posisi_field_divisi_required()
+    public function test_update_posisi_field_divisi_required(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -234,7 +234,7 @@ class PosisiTest extends TestCase
         $this->assertEquals('The divisi id field is required.', session()->get('errors')->first('divisi_id'));
     }
 
-    public function test_update_posisi_field_divisi_exist_at_database()
+    public function test_update_posisi_field_divisi_exist_at_database(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -251,7 +251,7 @@ class PosisiTest extends TestCase
         $this->assertEquals('The selected divisi id is invalid.', session()->get('errors')->first('divisi_id'));
     }
 
-    public function test_update_posisi_field_divisi_must_be_integer()
+    public function test_update_posisi_field_divisi_must_be_integer(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -268,7 +268,7 @@ class PosisiTest extends TestCase
         $this->assertEquals('The divisi id must be an integer.', session()->get('errors')->first('divisi_id'));
     }
 
-    public function test_update_posisi_field_is_active_required()
+    public function test_update_posisi_field_is_active_required(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -286,7 +286,7 @@ class PosisiTest extends TestCase
         $this->assertEquals('The is active field is required.', session()->get('errors')->first('is_active'));
     }
 
-    public function test_update_posisi_field_is_active_boolean()
+    public function test_update_posisi_field_is_active_boolean(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -304,7 +304,7 @@ class PosisiTest extends TestCase
         $this->assertEquals('The is active field must be true or false.', session()->get('errors')->first('is_active'));
     }
 
-    public function test_user_can_update_posisi_if_authenticated()
+    public function test_user_can_update_posisi_if_authenticated(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -328,7 +328,7 @@ class PosisiTest extends TestCase
 
     }
 
-   public function test_user_cant_delete_posisi_if_not_authenticated()
+   public function test_user_cant_delete_posisi_if_not_authenticated(): void
    {
          $posisi = Posisi::factory(1)->create();
          $response = $this->delete(route('posisi.destroy', $posisi->first()->id));
@@ -337,7 +337,7 @@ class PosisiTest extends TestCase
          $response->assertRedirect(route('login'));
    }
 
-    public function test_user_can_delete_posisi_if_authenticated()
+    public function test_user_can_delete_posisi_if_authenticated(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -353,7 +353,7 @@ class PosisiTest extends TestCase
         ]);
     }
 
-    public function test_get_posisi_data_by_divisi_with_json()
+    public function test_get_posisi_data_by_divisi_with_json(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);

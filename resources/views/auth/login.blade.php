@@ -5,29 +5,24 @@
         @csrf
         <div class="login-form-head">
             <h4>Sign In</h4>
-            <p>Hello there, Sign in and start managing your Admin Template</p>
+            <p>PT ADI BINTAN PERMATA</p>
         </div>
-        @if($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
         <div class="login-form-body">
             <div class="form-gp">
-                <label for="exampleInputEmail1">UUID</label>
-                <input type="number" id="exampleInputEmail1" name="uuid">
-                <i class="ti-email"></i>
-                <div class="text-danger"></div>
+                <label for="uuid">UUID</label>
+                <input type="number" id="uuid" name="uuid" required>
+                <i class="ti-user"></i>
+                @error('uuid')
+                    <div class="text-danger">{{ $message }}</div>
+                @enderror
             </div>
             <div class="form-gp">
-                <label for="exampleInputPassword1">Password</label>
-                <input type="password" id="exampleInputPassword1" name="password">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
                 <i class="ti-lock"></i>
-                <div class="text-danger"></div>
+                @error('password')
+                    <div class="text-danger">{{ $message }}</div>
+                @enderror
             </div>
             <div class="row mb-4 rmber-area">
 {{--                <div class="col-6">--}}

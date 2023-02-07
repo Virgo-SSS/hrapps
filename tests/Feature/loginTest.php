@@ -10,7 +10,7 @@ use Tests\TestCase;
 
 class loginTest extends TestCase
 {
-    public function test_can_go_to_login_page_if_user_not_authenticated()
+    public function test_can_go_to_login_page_if_user_not_authenticated(): void
     {
         $response = $this->get(route('login'));
 
@@ -18,7 +18,7 @@ class loginTest extends TestCase
         $response->assertSeeText('Sign In');
     }
 
-    public function test_can_not_go_to_login_page_if_user_authenticated()
+    public function test_can_not_go_to_login_page_if_user_authenticated(): void
     {
         $user = User::factory()->create();
         $response = $this->actingAs($user)->get(route('login'));
@@ -27,7 +27,7 @@ class loginTest extends TestCase
         $response->assertRedirect(route('home'));
     }
 
-    public function test_user_cant_login_if_password_null()
+    public function test_user_cant_login_if_password_null(): void
     {
         $user = User::factory()->create();
         $response = $this->post(route('login'), [
@@ -38,7 +38,7 @@ class loginTest extends TestCase
         $response->assertSessionHasErrors('password');
     }
 
-    public function test_user_cant_login_if_uuid_null()
+    public function test_user_cant_login_if_uuid_null(): void
     {
         $response = $this->post(route('login'), [
             'password' => 'password',
@@ -48,7 +48,7 @@ class loginTest extends TestCase
         $response->assertSessionHasErrors('uuid');
     }
 
-    public function test_user_cant_login_if_uuid_has_string()
+    public function test_user_cant_login_if_uuid_has_string(): void
     {
         $response = $this->post(route('login'), [
             'uuid' => 'string',
@@ -59,7 +59,7 @@ class loginTest extends TestCase
         $response->assertSessionHasErrors('uuid');
     }
 
-    public function test_user_cant_login_if_uuid_doesnt_exitst()
+    public function test_user_cant_login_if_uuid_doesnt_exitst(): void
     {
         $response = $this->post(route('login'), [
             'uuid' => '00000000-0000-0000-0000-000000000000',
@@ -70,7 +70,7 @@ class loginTest extends TestCase
         $response->assertSessionHasErrors('uuid');
     }
 
-    public function test_user_cant_login_if_password_doesnt_match()
+    public function test_user_cant_login_if_password_doesnt_match(): void
     {
         $user = User::factory()->create();
         $response = $this->post(route('login'), [
@@ -82,7 +82,7 @@ class loginTest extends TestCase
         $response->assertSessionHasErrors('uuid');
     }
 
-    public function test_user_can_login_if_password_match()
+    public function test_user_can_login_if_password_match(): void
     {
         $user = User::factory()->create();
         $response = $this->post(route('login'), [

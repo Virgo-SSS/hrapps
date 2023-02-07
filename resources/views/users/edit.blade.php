@@ -2,7 +2,7 @@
 
 @section('title') {{-- This Title location is at header --}}
 <li><a href="{{ route('users.index') }}">Users</a></li>
-<li><span>Create</span></li>
+<li><span>Edit</span></li>
 @endsection
 
 @section('content')
