@@ -5,11 +5,18 @@ namespace App\Http\Controllers;
 use App\Models\Cuti;
 use App\Http\Requests\StoreCutiRequest;
 use App\Http\Requests\UpdateCutiRequest;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
 
 class CutiController extends Controller
 {
+    private $respository;
+
+    public function __construct()
+    {
+
+    }
     public function index(): View
     {
         return view('cuti.index');
@@ -20,15 +27,9 @@ class CutiController extends Controller
         return view('cuti.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreCutiRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreCutiRequest $request)
+    public function store(StoreCutiRequest $request): RedirectResponse
     {
-        //
+        return redirect()->route('cuti.index')->with('toastr-success', 'Cuti created successfully.');
     }
 
     /**

@@ -11,16 +11,16 @@ use Illuminate\View\View;
 
 class DivisiController extends Controller
 {
-    private $Repository;
+    private $repository;
 
-    public function __construct(DivisiRepositoryInterface $Repository)
+    public function __construct(DivisiRepositoryInterface $repository)
     {
-        $this->Repository = $Repository;
+        $this->repository = $repository;
     }
 
     public function index(): View
     {
-        $divisis = $this->Repository->getDivisi();
+        $divisis = $this->repository->getDivisi();
         return view('divisi.index', compact('divisis'));
     }
 
@@ -31,7 +31,7 @@ class DivisiController extends Controller
 
     public function store(StoreDivisiRequest $request): RedirectResponse
     {
-        $this->Repository->store($request);
+        $this->repository->store($request);
         return redirect()->route('divisi.index')->with('toastr-success', 'Divisi Successfully Created');
     }
 
@@ -47,13 +47,13 @@ class DivisiController extends Controller
 
     public function update(UpdateDivisiRequest $request, Divisi $divisi): RedirectResponse
     {
-        $this->Repository->update($request, $divisi);
+        $this->repository->update($request, $divisi);
         return redirect()->route('divisi.index')->with('toastr-success', 'Divisi Successfully Updated');
     }
 
     public function destroy(Divisi $divisi): RedirectResponse
     {
-        $this->Repository->delete($divisi);
+        $this->repository->delete($divisi);
         return redirect()->route('divisi.index')->with('toastr-success', 'Divisi Successfully Deleted');
     }
 }

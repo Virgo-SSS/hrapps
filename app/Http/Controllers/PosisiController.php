@@ -13,18 +13,18 @@ use Illuminate\View\View;
 
 class PosisiController extends Controller
 {
-    private $Repository;
+    private $repository;
     private $divisiRepository;
 
-    public function __construct(PosisiRepositoryInterface $Repository, DivisiRepositoryInterface $divisiRepository)
+    public function __construct(PosisiRepositoryInterface $repository, DivisiRepositoryInterface $divisiRepository)
     {
-        $this->Repository = $Repository;
+        $this->repository = $repository;
         $this->divisiRepository = $divisiRepository;
     }
 
     public function index(): View
     {
-        $posisis = $this->Repository->getPosisi();
+        $posisis = $this->repository->getPosisi();
         $divisis = $this->divisiRepository->getDivisiWithoutEagerLoading();
         return view('posisi.index', compact('posisis','divisis'));
     }
@@ -36,7 +36,7 @@ class PosisiController extends Controller
 
     public function store(StorePosisiRequest $request): RedirectResponse
     {
-        $this->Repository->store($request);
+        $this->repository->store($request);
         return redirect()->route('posisi.index')->with('toastr-success', 'Posisi Successfully Created');
     }
 
@@ -53,21 +53,21 @@ class PosisiController extends Controller
 
     public function update(UpdatePosisiRequest $request, Posisi $posisi): RedirectResponse
     {
-        $this->Repository->update($request, $posisi);
+        $this->repository->update($request, $posisi);
         return redirect()->route('posisi.index')->with('toastr-success', 'Posisi Successfully Updated');
     }
 
 
     public function destroy(Posisi $posisi): RedirectResponse
     {
-        $this->Repository->delete($posisi);
+        $this->repository->delete($posisi);
         return redirect()->route('posisi.index')->with('toastr-success', 'Posisi Successfully Deleted');
     }
 
 
     public function getPosisiByDivisi(int $divisi_id): JsonResponse
     {
-        $posisis = $this->Repository->getPosisiByDivisi($divisi_id);
+        $posisis = $this->repository->getPosisiByDivisi($divisi_id);
         return response()->json($posisis);
     }
 }
