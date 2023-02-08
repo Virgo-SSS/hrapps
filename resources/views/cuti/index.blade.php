@@ -5,9 +5,15 @@
     <li><span>Index</span></li>
 @endsection
 
-
 @section('content')
-    <div class="col-12 mt-5">
+    <div class="col-12 mt-2">
+        <div class="mb-3">
+            <button class="btn btn-success">
+                <a href="{{ route('cuti.create') }}" style="text-decoration: none; color:white">
+                    Create Request Cuti  <i class="fa fa-plus" style="color: #fbff7c"></i>
+                </a>
+            </button>
+        </div>
         <div class="card">
             <div class="card-body">
                 <h4 class="header-title">Progress Table</h4>

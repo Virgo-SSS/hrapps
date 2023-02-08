@@ -35,4 +35,5 @@ Route::middleware('auth')->group(function(){
     Route::resource('posisi', PosisiController::class)->except(['show','create']);
     Route::get('posisi/posisi-by-divisi/{divisi_id}', [PosisiController::class,'getPosisiByDivisi'])->name('posisi.by-divisi');
     Route::resource('cuti', CutiController::class)->except(['show']);
+    Route::get('cuti/request', [CutiController::class,'request'])->name('cuti.request');
 });

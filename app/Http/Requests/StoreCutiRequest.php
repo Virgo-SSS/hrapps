@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\CheckDateFormat;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class StoreCutiRequest extends FormRequest
 {
@@ -13,7 +15,7 @@ class StoreCutiRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return Auth::check();
     }
 
     /**
@@ -24,7 +26,11 @@ class StoreCutiRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'date' => ['required', new  CheckDateFormat('Y-m-d','daterange')],
+            'reason' => 'required|string',
+
+            'head_of_division' => 'required|integer|exists:users,id',
+            'head_of_department' => 'required|integer|exists:users,id',
         ];
     }
 }

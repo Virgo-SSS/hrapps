@@ -200,6 +200,7 @@ return [
         App\Providers\UserServiceProvider::class,
         App\Providers\UserProfileServiceProvider::class,
         App\Providers\CutiServiceProvider::class,
+        App\Providers\CutiRequestServiceProvider::class,
 
     ],
 

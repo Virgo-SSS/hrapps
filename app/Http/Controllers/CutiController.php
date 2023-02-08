@@ -2,21 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Interfaces\CutiRepositoryInterface;
 use App\Models\Cuti;
 use App\Http\Requests\StoreCutiRequest;
 use App\Http\Requests\UpdateCutiRequest;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
 
 class CutiController extends Controller
 {
-    private $respository;
+    private $repository;
 
-    public function __construct()
+    public function __construct(CutiRepositoryInterface $repository)
     {
-
+        $this->repository = $repository;
     }
+
     public function index(): View
     {
         return view('cuti.index');
@@ -24,11 +27,18 @@ class CutiController extends Controller
 
     public function create(): View
     {
-        return view('cuti.create');
+        $users = User::all();
+        return view('cuti.create', compact('users'));
+    }
+
+    public function request(): View
+    {
+        return view('cuti.request');
     }
 
     public function store(StoreCutiRequest $request): RedirectResponse
     {
+        $this->repository->store($request);
         return redirect()->route('cuti.index')->with('toastr-success', 'Cuti created successfully.');
     }
 

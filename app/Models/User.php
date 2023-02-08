@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -53,5 +54,20 @@ class User extends Authenticatable
     public function profile()
     {
         return $this->hasOne(UserProfile::class, 'user_id');
+    }
+
+    public function cuti(): HasMany
+    {
+        return $this->hasMany(Cuti::class, 'user_id');
+    }
+
+    public function head_of_division(): HasMany
+    {
+        return $this->hasMany(CutiRequest::class, 'head_of_division');
+    }
+
+    public function head_of_department(): HasMany
+    {
+        return $this->hasMany(CutiRequest::class, 'head_of_department');
     }
 }
