@@ -29,40 +29,33 @@
                     </div>
                     <div class="form-row">
                         <div class="col-md-6 mb-3">
-                            <label for="reason">Reason</label>
-                            <textarea name="reason" name="reason" id="reason" class="form-control" rows="5" required>{{ old('reason') }}</textarea>
-                            @error('reason')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                        </div>
-                        <div class="col-md-6 mb-3">
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="head_of_division">Head Of Division</label>
                                     <select name="head_of_division" id="head_of_division" class="demo-default" required placeholder="Select a person...">
+                                        <option value="">Select a Head Of Division...</option>
                                         @foreach($users as $user)
                                             <option value="{{ $user->id }}">{{ $user->name }}</option>
                                         @endforeach
                                     </select>
                                     @error('head_of_division')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
                                     @enderror
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="head_of_department">Head Of Departement</label>
+                                    <label for="head_of_department">Head Of Department</label>
                                     <select name="head_of_department" id="head_of_department" required class="demo-default" placeholder="Select a person...">
+                                        <option value="">Select a Head Of Department...</option>
                                         @foreach($users as $user)
                                             <option value="{{ $user->id }}">{{ $user->name }}</option>
                                         @endforeach
                                     </select>
                                     @error('head_of_department')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
                                     @enderror
                                 </div>
 
@@ -75,6 +68,15 @@
                                     <input type="text" id="leave_days" disabled class="form-control">
                                 </div>
                             </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="reason">Reason</label>
+                            <textarea name="reason" name="reason" id="reason" class="form-control" rows="5" required>{{ old('reason') }}</textarea>
+                            @error('reason')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                            @enderror
                         </div>
                     </div>
                     <button class="btn btn-primary" type="submit">Submit form</button>
