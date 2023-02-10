@@ -21,19 +21,19 @@ class DivisiRepository implements DivisiRepositoryInterface
         return Divisi::all();
     }
 
-    public function store(StoreDivisiRequest $request): void
+    public function store(array $request): void
     {
         Divisi::create([
-            'name' => strtolower($request->name),
+            'name' => strtolower($request['name']),
             'created_by' => Auth::id(),
         ]);
     }
 
-    public function update(UpdateDivisiRequest $request, Divisi $divisi): void
+    public function update(array $request, Divisi $divisi): void
     {
         $divisi->update([
-            'name' => strtolower($request->name),
-            'is_active' => $request->is_active,
+            'name' => strtolower($request['name']),
+            'is_active' => $request['is_active'],
             'edited_by' => Auth::id(),
         ]);
     }

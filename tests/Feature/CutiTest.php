@@ -38,6 +38,7 @@ class CutiTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertViewIs('cuti.index');
+        $response->assertViewHas('cutis');
     }
 
     public function test_user_cant_access_create_cuti_page_if_not_authenticated(): void

@@ -15,21 +15,21 @@ class CutiRepository implements CutiRepositoryInterface
         return Cuti::all();
     }
 
-    public function store(StoreCutiRequest $request): void
+    public function store(array $request): void
     {
-        $date = explode(' ', $request->date);
+        $date = explode(' ', $request['date']);
         $cuti = auth()->user()->cuti()->create([
             'from' => $date[0],
             'to' => $date[2],
-            'reason' => $request->reason,
+            'reason' => $request['reason'],
         ]);
 
-        app(CutiRequestRepositoryInterface::class)->create($cuti, $request->safe()->only(['head_of_division','head_of_department']));
+        app(CutiRequestRepositoryInterface::class)->create($cuti, $request);
     }
 
-    public function update(array $data, $id): void
+    public function update(array $request, $id): void
     {
-        Cuti::find($id)->update($data);
+        Cuti::find($id)->update($request);
     }
 
     public function delete($id): void

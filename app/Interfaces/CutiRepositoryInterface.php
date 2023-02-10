@@ -9,9 +9,9 @@ interface CutiRepositoryInterface
 {
     public function getCuti(): Collection;
 
-    public function store(StoreCutiRequest $request): void;
+    public function store(array $request): void;
 
-    public function update(array $data, $id): void;
+    public function update(array $request, $id): void;
 
     public function delete($id): void;
 }

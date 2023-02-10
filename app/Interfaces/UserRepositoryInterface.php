@@ -12,9 +12,9 @@ interface UserRepositoryInterface
 {
     public function getUser(): Collection;
 
-    public function create(StoreUserRequest $request): void;
+    public function create(array $request): void;
 
-    public function update(UpdateUserRequest $request, User $user): void;
+    public function update(array $request, User $user): void;
 
     public function delete(User $user): void;
 

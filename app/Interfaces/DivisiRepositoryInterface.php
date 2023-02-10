@@ -13,9 +13,9 @@ interface DivisiRepositoryInterface
 
     public function getDivisiWithoutEagerLoading(): Collection;
 
-    public function store(StoreDivisiRequest $request): void;
+    public function store(array $request): void;
 
-    public function update(UpdateDivisiRequest $request, Divisi $divisi): void;
+    public function update(array $request, Divisi $divisi): void;
 
     public function delete(Divisi $divisi): void;
 }

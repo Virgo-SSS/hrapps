@@ -36,7 +36,7 @@ class PosisiController extends Controller
 
     public function store(StorePosisiRequest $request): RedirectResponse
     {
-        $this->repository->store($request);
+        $this->repository->store($request->validated());
         return redirect()->route('posisi.index')->with('toastr-success', 'Posisi Successfully Created');
     }
 
@@ -53,7 +53,7 @@ class PosisiController extends Controller
 
     public function update(UpdatePosisiRequest $request, Posisi $posisi): RedirectResponse
     {
-        $this->repository->update($request, $posisi);
+        $this->repository->update($request->validated(), $posisi);
         return redirect()->route('posisi.index')->with('toastr-success', 'Posisi Successfully Updated');
     }
 

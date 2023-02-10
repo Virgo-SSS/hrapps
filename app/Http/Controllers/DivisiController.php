@@ -31,7 +31,7 @@ class DivisiController extends Controller
 
     public function store(StoreDivisiRequest $request): RedirectResponse
     {
-        $this->repository->store($request);
+        $this->repository->store($request->validated());
         return redirect()->route('divisi.index')->with('toastr-success', 'Divisi Successfully Created');
     }
 
@@ -47,7 +47,7 @@ class DivisiController extends Controller
 
     public function update(UpdateDivisiRequest $request, Divisi $divisi): RedirectResponse
     {
-        $this->repository->update($request, $divisi);
+        $this->repository->update($request->validated(), $divisi);
         return redirect()->route('divisi.index')->with('toastr-success', 'Divisi Successfully Updated');
     }
 

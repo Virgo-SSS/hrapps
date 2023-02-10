@@ -22,27 +22,27 @@ class UserRepository implements UserRepositoryInterface
         ->get();
     }
 
-    public function create(StoreUserRequest $request): void
+    public function create(array $request): void
     {
         $user = User::create([
-            'uuid'      => $request->uuid,
-            'name'      => $request->name,
-            'password'  => bcrypt($request->password),
-            'email'     => $request->email,
+            'uuid'      => $request['uuid'],
+            'name'      => $request['name'],
+            'password'  => bcrypt($request['password']),
+            'email'     => $request['email'],
         ]);
 
-        app(UserProfileRepositoryInterface::class)->store($user, $request->all());
+        app(UserProfileRepositoryInterface::class)->store($user, $request);
     }
 
-    public function update(UpdateUserRequest $request, User $user): void
+    public function update(array $request, User $user): void
     {
         $user->update([
-            'uuid'      => $request->uuid,
-            'name'      => $request->name,
-            'email'     => $request->email,
+            'uuid'      => $request['uuid'],
+            'name'      => $request['name'],
+            'email'     => $request['email'],
         ]);
 
-        app(UserProfileRepositoryInterface::class)->update($user, $request->all());
+        app(UserProfileRepositoryInterface::class)->update($user, $request);
     }
 
     public function delete(User $user): void

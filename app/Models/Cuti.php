@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -28,5 +29,17 @@ class Cuti extends Model
     public function cutiRequest(): HasOne
     {
         return $this->hasOne(CutiRequest::class, 'cuti_id');
+    }
+
+    public function getDurationAttribute(): int
+    {
+        $from = Carbon::parse($this->from);
+        $to = Carbon::parse($this->to);
+        return $to->diffInDays($from) + 1;
+    }
+
+    public function getStatusInHumanAttribute(): string
+    {
+        return $this->status == 0 ? 'Pending' : ($this->status == 1 ? 'Approved' : 'Rejected');
     }
 }

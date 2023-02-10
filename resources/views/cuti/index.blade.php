@@ -22,83 +22,48 @@
                         <table class="table table-hover progress-table text-center">
                             <thead class="text-uppercase">
                             <tr>
-                                <th scope="col">ID</th>
-                                <th scope="col">task</th>
-                                <th scope="col">Deadline</th>
-                                <th scope="col">Progress</th>
-                                <th scope="col">status</th>
-                                <th scope="col">action</th>
+                                <th scope="col">No</th>
+                                <th scope="col">UUID</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Divisi</th>
+                                <th scope="col">Posisi</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Return</th>
+                                <th scope="col">Days</th>
+                                <th scope="col">Sisa Cuti</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Edit Status</th>
+                                <th scope="col">Action</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>Mark</td>
-                                <td>09 / 07 / 2018</td>
-                                <td>
-                                    <div class="progress" style="height: 8px;">
-                                        <div class="progress-bar" role="progressbar" style="width: 50%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </td>
-                                <td><span class="status-p bg-primary">pending</span></td>
-                                <td>
-                                    <ul class="d-flex justify-content-center">
-                                        <li class="mr-3"><a href="#" class="text-secondary"><i class="fa fa-edit"></i></a></li>
-                                        <li><a href="#" class="text-danger"><i class="ti-trash"></i></a></li>
-                                    </ul>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">2</th>
-                                <td>Mark</td>
-                                <td>09 / 07 / 2018</td>
-                                <td>
-                                    <div class="progress" style="height: 8px;">
-                                        <div class="progress-bar bg-warning" role="progressbar" style="width: 80%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </td>
-                                <td><span class="status-p bg-warning">pending</span></td>
-                                <td>
-                                    <ul class="d-flex justify-content-center">
-                                        <li class="mr-3"><a href="#" class="text-secondary"><i class="fa fa-edit"></i></a></li>
-                                        <li><a href="#" class="text-danger"><i class="ti-trash"></i></a></li>
-                                    </ul>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">3</th>
-                                <td>Mark</td>
-                                <td>09 / 07 / 2018</td>
-                                <td>
-                                    <div class="progress" style="height: 8px;">
-                                        <div class="progress-bar bg-success" role="progressbar" style="width: 100%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </td>
-                                <td><span class="status-p bg-success">complate</span></td>
-                                <td>
-                                    <ul class="d-flex justify-content-center">
-                                        <li class="mr-3"><a href="#" class="text-secondary"><i class="fa fa-edit"></i></a></li>
-                                        <li><a href="#" class="text-danger"><i class="ti-trash"></i></a></li>
-                                    </ul>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">4</th>
-                                <td>Mark</td>
-                                <td>09 / 07 / 2018</td>
-                                <td>
-                                    <div class="progress" style="height: 8px;">
-                                        <div class="progress-bar bg-warning" role="progressbar" style="width: 85%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </td>
-                                <td><span class="status-p bg-warning">panding</span></td>
-                                <td>
-                                    <ul class="d-flex justify-content-center">
-                                        <li class="mr-3"><a href="#" class="text-secondary"><i class="fa fa-edit"></i></a></li>
-                                        <li><a href="#" class="text-danger"><i class="ti-trash"></i></a></li>
-                                    </ul>
-                                </td>
-                            </tr>
+                                @foreach($cutis as $cuti)
+                                    <tr>
+                                        <th scope="row">{{ $loop->iteration }}</th>
+                                        <td>{{ $cuti->user->uuid  }}</td>
+                                        <td>{{ $cuti->user->name }}</td>\
+                                        <td>{{ $cuti->user->profile->divisi->name }}</td>
+                                        <td>{{ $cuti->user->profile->posisi->name }}</td>
+                                        <td>{{ $cuti->from }}</td>
+                                        <td>{{ $cuti->to }}</td>
+                                        <td>{{ $cuti->duration }}</td>
+                                        <td>{{ $cuti->user->profile->cuti }}</td>
+                                        <td>
+                                            <span class="status-p bg-primary">
+                                                {{ $cuti->status_in_human }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            -
+                                        </td>
+                                        <td>
+                                            <ul class="d-flex justify-content-center">
+                                                <li class="mr-3"><a href="#" class="text-secondary"><i class="fa fa-edit"></i></a></li>
+                                                <li><a href="#" class="text-danger"><i class="ti-trash"></i></a></li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>

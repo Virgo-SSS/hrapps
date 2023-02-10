@@ -36,7 +36,7 @@ class UserController extends Controller
 
     public function store(StoreUserRequest $request): RedirectResponse
     {
-        $this->repository->create($request);
+        $this->repository->create($request->validated());
         return redirect()->route('users.index')->with('toastr-success', 'User Successfully Added');
     }
 
@@ -53,7 +53,7 @@ class UserController extends Controller
 
     public function update(UpdateUserRequest $request, User $user): RedirectResponse
     {
-        $this->repository->update($request, $user);
+        $this->repository->update($request->validated(), $user);
         return redirect()->route('users.index')->with('toastr-success', 'User Successfully Updated');
     }
 

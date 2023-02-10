@@ -22,7 +22,8 @@ class CutiController extends Controller
 
     public function index(): View
     {
-        return view('cuti.index');
+        $cutis = $this->repository->getCuti();
+        return view('cuti.index', compact('cutis'));
     }
 
     public function create(): View
@@ -38,7 +39,7 @@ class CutiController extends Controller
 
     public function store(StoreCutiRequest $request): RedirectResponse
     {
-        $this->repository->store($request);
+        $this->repository->store($request->all());
         return redirect()->route('cuti.index')->with('toastr-success', 'Cuti created successfully.');
     }
 
