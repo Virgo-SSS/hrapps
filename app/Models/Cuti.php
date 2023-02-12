@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -21,6 +22,10 @@ class Cuti extends Model
         'reason',
     ];
 
+    /*
+     *  Relationships
+     *
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
@@ -31,6 +36,20 @@ class Cuti extends Model
         return $this->hasOne(CutiRequest::class, 'cuti_id');
     }
 
+    /*
+     * Scope Query
+     *
+     */
+    public function scopePending($query): Builder
+    {
+        return $query->where('status', config('cuti.status.pending'));
+    }
+
+
+    /*
+     *  Accessors And Mutators
+     *
+     */
     public function getDurationAttribute(): int
     {
         $from = Carbon::parse($this->from);
@@ -42,4 +61,10 @@ class Cuti extends Model
     {
         return $this->status == 0 ? 'Pending' : ($this->status == 1 ? 'Approved' : 'Rejected');
     }
+
+    public function getColorStatusAttribute(): string
+    {
+        return $this->status == 0 ? 'warning' : ($this->status == 1 ? 'success' : 'danger');
+    }
+
 }

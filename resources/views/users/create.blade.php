@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title') {{-- This Title location is at header --}}
-    <li><a href="{{ route('users.index') }}">Users</a></li>
+    <li><a href="{{ route('users.index') }}">Employee</a></li>
     <li><span>Create</span></li>
 @endsection
 
@@ -10,7 +10,7 @@
         <div class="col-12">
             <div class="card mt-5">
                 <div class="card-body">
-                    <h4 class="header-title">Create User</h4>
+                    <h4 class="header-title">Create Employee</h4>
                     <form action="{{ route('users.store') }}" method="POST">
                         @csrf
                         <div class="form-row">

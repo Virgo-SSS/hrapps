@@ -13,7 +13,7 @@
                 <input type="number" id="uuid" name="uuid" required>
                 <i class="ti-user"></i>
                 @error('uuid')
-                    <div class="text-danger">{{ $message }}</div>
+                    <div class="text-danger mt-1">{{ $message }}</div>
                 @enderror
             </div>
             <div class="form-gp">
@@ -21,7 +21,7 @@
                 <input type="password" id="password" name="password" required>
                 <i class="ti-lock"></i>
                 @error('password')
-                    <div class="text-danger">{{ $message }}</div>
+                    <div class="text-danger mt-1">{{ $message }}</div>
                 @enderror
             </div>
             <div class="row mb-4 rmber-area">

@@ -37,7 +37,8 @@ class UserTest extends TestCase
         $response = $this->actingAs($user)->get(route('users.index'));
 
         $response->assertStatus(200);
-        $response->assertSeeText('Data Users');
+        $response->assertSeeText('Data Employee');
+        $response->assertViewIs('users.index');
     }
 
     public function test_user_cant_goto_user_create_page_if_not_authenticated(): void
@@ -54,7 +55,8 @@ class UserTest extends TestCase
         $response = $this->actingAs($user)->get(route('users.create'));
 
         $response->assertStatus(200);
-        $response->assertSeeText('Create User');
+        $response->assertSeeText('Create Employee');
+        $response->assertViewIs('users.create');
     }
 
     public function test_store_user_field_uuid_is_required(): void

@@ -38,7 +38,7 @@
         toastr.error("{{ Session::get('toastr-error') }}")
     @endif
 
-    function deleteItem(id,name,) {
+    function deleteItem(id,name) {
         Swal.fire({
             title: 'Are you sure want to delete ' + name + '?',
             icon: 'warning',

@@ -32,8 +32,10 @@ Route::middleware('auth')->group(function(){
 
     Route::resource('users', UserController::class)->except(['show']);
     Route::resource('divisi', DivisiController::class)->except(['show','create']);
-    Route::resource('posisi', PosisiController::class)->except(['show','create']);
+
     Route::get('posisi/posisi-by-divisi/{divisi_id}', [PosisiController::class,'getPosisiByDivisi'])->name('posisi.by-divisi');
-    Route::resource('cuti', CutiController::class)->except(['show']);
+    Route::resource('posisi', PosisiController::class)->except(['show','create']);
+
     Route::get('cuti/request', [CutiController::class,'request'])->name('cuti.request');
+    Route::resource('cuti', CutiController::class);
 });

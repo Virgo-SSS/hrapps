@@ -24,18 +24,45 @@ class CutiRequest extends Model
         'approved_hodp_at',
     ];
 
+    /*
+     * Relationships
+     */
     public function cuti(): BelongsTo
     {
         return $this->belongsTo(Cuti::class, 'cuti_id');
     }
 
-    public function head_of_division(): BelongsTo
+    public function head_division(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'head_of_divsion');
+        return $this->belongsTo(User::class, 'head_of_division');
     }
 
-    public function head_of_department(): BelongsTo
+    public function head_department(): BelongsTo
     {
         return $this->belongsTo(User::class, 'head_of_department');
+    }
+
+
+    /*
+     * Accessor & Mutator
+     */
+    public function getStatusHodInHumanAttribute(): string
+    {
+        return $this->status_hod == 0 ? 'Pending' : ($this->status_hod == 1 ? 'Approved' : 'Rejected');
+    }
+
+    public function getStatusHodpInHumanAttribute(): string
+    {
+        return $this->status_hodp == 0 ? 'Pending' : ($this->status_hodp == 1 ? 'Approved' : 'Rejected');
+    }
+
+    public function getColorStatusHodAttribute(): string
+    {
+        return $this->status_hod == 0 ? 'warning' : ($this->status_hod == 1 ? 'success' : 'danger');
+    }
+
+    public function getColorStatusHodpAttribute(): string
+    {
+        return $this->status_hodp == 0 ? 'warning' : ($this->status_hodp == 1 ? 'success' : 'danger');
     }
 }

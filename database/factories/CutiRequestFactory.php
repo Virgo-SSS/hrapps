@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Cuti;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,11 +20,11 @@ class CutiRequestFactory extends Factory
     {
         return [
             'cuti_id' => $this->getCutiId(),
-            'head_of_division' => $this->faker->numberBetween(1, 10),
+            'head_of_division' => $this->getUserId(),
             'status_hod' => $this->faker->numberBetween(1, 10),
             'note_hod' => $this->faker->text,
             'approved_hod_at' => $this->faker->dateTime,
-            'head_of_department' => $this->faker->numberBetween(1, 10),
+            'head_of_department' => $this->getUserId(),
             'status_hodp' => $this->faker->numberBetween(1, 10),
             'note_hodp' => $this->faker->text,
             'approved_hodp_at' => $this->faker->dateTime,
@@ -37,6 +38,18 @@ class CutiRequestFactory extends Factory
             return $cuti->id;
         } else {
             return Cuti::factory()->create()->id;
+        }
+    }
+
+    private function getUserId(): int
+    {
+        // get random user
+        $user = User::inRandomOrder()->first();
+
+        if($user) {
+            return $user->id;
+        }else {
+            return User::factory()->create()->id;
         }
     }
 }

@@ -13,7 +13,7 @@ use Illuminate\View\View;
 
 class CutiController extends Controller
 {
-    private $repository;
+    private CutiRepositoryInterface $repository;
 
     public function __construct(CutiRepositoryInterface $repository)
     {
@@ -32,9 +32,10 @@ class CutiController extends Controller
         return view('cuti.create', compact('users'));
     }
 
-    public function request(): View
+    public function request()
     {
-        return view('cuti.request');
+        $pendingCutis = $this->repository->getPendingCuti();
+        return view('cuti.request', compact('pendingCutis'));
     }
 
     public function store(StoreCutiRequest $request): RedirectResponse
@@ -43,15 +44,9 @@ class CutiController extends Controller
         return redirect()->route('cuti.index')->with('toastr-success', 'Cuti created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Cuti  $cuti
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Cuti $cuti)
+    public function show(Cuti $cuti): View
     {
-        //
+        return view('cuti.detail', compact('cuti'));
     }
 
     /**
@@ -77,14 +72,9 @@ class CutiController extends Controller
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Cuti  $cuti
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Cuti $cuti)
+    public function destroy(Cuti $cuti): RedirectResponse
     {
-        //
+        $this->repository->delete($cuti->id);
+        return redirect()->route('cuti.index')->with('toastr-success', 'Cuti deleted successfully.');
     }
 }

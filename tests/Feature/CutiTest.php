@@ -15,10 +15,13 @@ class CutiTest extends TestCase
     private function prepareRequest(): array
     {
         $request = Cuti::factory()->make()->toArray();
+        $request['date'] = $request['from'] . ' - ' . $request['to'];
         $request['head_of_division'] = User::factory()->create()->id;
         $request['head_of_department'] = User::factory()->create()->id;
 
         unset($request['user_id']);
+        unset($request['from']);
+        unset($request['to']);
         return $request;
     }
 
@@ -158,6 +161,68 @@ class CutiTest extends TestCase
             'head_of_department' => $request['head_of_department'],
             'status_hodp' => config('cuti.status.pending'),
             'note_hodp' => null,
+        ]);
+    }
+
+    public function test_user_cant_go_to_cuti_detaill_if_not_authenticated(): void
+    {
+        $cuti = Cuti::factory()->create();
+
+        $response = $this->get(route('cuti.show', $cuti->id));
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('login'));
+    }
+
+    public function test_user_can_go_to_cuti_detail_if_authenticated(): void
+    {
+        $user = User::factory()->create();
+        $hod = User::factory()->create();
+        $hodp = User::factory()->create();
+
+        $cuti = Cuti::factory()->create(['user_id' => $user->id]);
+        CutiRequest::factory()->create([
+            'cuti_id' => $cuti->id,
+            'head_of_division' => $hod->id,
+            'head_of_department' => $hodp->id,
+        ]);
+
+        $response = $this->actingAs($user)->get(route('cuti.show', $cuti->id));
+
+        $response->assertStatus(200);
+        $response->assertViewIs('cuti.detail');
+        $response->assertViewHas('cuti');
+    }
+
+    public function test_user_cant_delete_cuti_if_unautheticated(): void
+    {
+        $cuti = Cuti::factory()->create();
+
+        $response = $this->delete(route('cuti.destroy', $cuti->id));
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('login'));
+    }
+
+    public function test_user_can_delete_cuti_if_authenticated(): void
+    {
+        $user = User::factory()->create();
+
+        $cuti = Cuti::factory()->create(['user_id' => $user->id]);
+        CutiRequest::factory()->create(['cuti_id' => $cuti->id]);
+
+        $response = $this->actingAs($user)->delete(route('cuti.destroy', $cuti->id));
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('cuti.index'));
+        $response->assertSessionHas('toastr-success', 'Cuti deleted successfully.');
+
+        $this->assertDatabaseMissing('cuti', [
+            'id' => $cuti->id,
+        ]);
+
+        $this->assertDatabaseMissing('cuti_request', [
+            'cuti_id' => $cuti->id,
         ]);
     }
 }

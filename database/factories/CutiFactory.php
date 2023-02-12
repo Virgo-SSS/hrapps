@@ -19,7 +19,8 @@ class CutiFactory extends Factory
     {
         return [
             'user_id' => $this->getUserId(),
-            'date' => $this->faker->date() . ' - ' . $this->faker->date(),
+            'from' => $this->faker->date(),
+            'to' => $this->faker->date(),
             'reason' => $this->faker->text(),
         ];
     }

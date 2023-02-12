@@ -15,6 +15,11 @@ class CutiRepository implements CutiRepositoryInterface
         return Cuti::all();
     }
 
+    public function getPendingCuti(): Collection
+    {
+        return Cuti::Pending()->get();
+    }
+
     public function store(array $request): void
     {
         $date = explode(' ', $request['date']);
@@ -32,7 +37,7 @@ class CutiRepository implements CutiRepositoryInterface
         Cuti::find($id)->update($request);
     }
 
-    public function delete($id): void
+    public function delete(int $id): void
     {
         Cuti::find($id)->delete();
     }

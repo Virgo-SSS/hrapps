@@ -19,7 +19,7 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="date">Date</label>
-                            <input type="text" name="date" id="date" value="{{ old('date') }}" class="form-control" required>
+                            <input type="text" name="date" id="date" value="{{ old('date') }}" class="form-control" required autocomplete="off" placeholder="Select Date Range">
                             @error('date')
                                 <div class="invalid-feedback">
                                     {{ $message }}
@@ -35,13 +35,13 @@
                                     <select name="head_of_division" id="head_of_division" class="demo-default" required placeholder="Select a person...">
                                         <option value="">Select a Head Of Division...</option>
                                         @foreach($users as $user)
-                                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                            <option value="{{ $user->id }}" @selected(old('head_of_division') == $user->id)>{{ $user->name }}</option>
                                         @endforeach
                                     </select>
                                     @error('head_of_division')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
                                     @enderror
                                 </div>
                                 <div class="col-md-6 mb-3">
@@ -49,13 +49,13 @@
                                     <select name="head_of_department" id="head_of_department" required class="demo-default" placeholder="Select a person...">
                                         <option value="">Select a Head Of Department...</option>
                                         @foreach($users as $user)
-                                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                            <option value="{{ $user->id }}" @selected(old('head_of_department') == $user->id)>{{ $user->name }}</option>
                                         @endforeach
                                     </select>
                                     @error('head_of_department')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
                                     @enderror
                                 </div>
 
@@ -73,9 +73,9 @@
                             <label for="reason">Reason</label>
                             <textarea name="reason" name="reason" id="reason" class="form-control" rows="5" required>{{ old('reason') }}</textarea>
                             @error('reason')
-                            <div class="invalid-feedback">
-                                {{ $message }}
-                            </div>
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
                             @enderror
                         </div>
                     </div>
@@ -88,17 +88,36 @@
 
 @section('scripts')
     <script>
-        $('input[name="date"]').daterangepicker({
-            'locale': {
-                'format': 'YYYY-MM-DD'
-            },
-        });
+        $(document).ready(function() {
+            $('#date').daterangepicker({
+                locale: {
+                    format: 'YYYY-MM-DD'
+                },
+                minDate: moment(),
+                autoUpdateInput: false,
+                showDropdowns: true,
+                opens: 'center',
+                autoApply: true,
+            });
 
-        $('select').selectize({
-            sortField: {
-                field: 'text',
-                direction: 'asc'
-            }
+            $('#date').on('apply.daterangepicker', function(ev, picker) {
+                $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+                var start = picker.startDate.format('YYYY-MM-DD');
+                var end = picker.endDate.format('YYYY-MM-DD');
+                var diff = moment(end).diff(moment(start), 'days');
+                $('#leave_days').val(diff + 1);
+            });
+
+            $('#date').on('cancel.daterangepicker', function(ev, picker) {
+                $(this).val('');
+            });
+
+            $('select').selectize({
+                sortField: {
+                    field: 'text',
+                    direction: 'asc'
+                }
+            });
         });
     </script>
 @endsection

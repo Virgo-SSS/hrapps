@@ -13,10 +13,10 @@
                         <a href="{{ route('home') }}" aria-expanded="true"><i class="ti-dashboard"></i><span>dashboard</span></a>
                     </li>
                     <li>
-                        <a href="javascript:void(0)" aria-expanded="true"><i class="fa fa-user"></i><span>User</span></a>
+                        <a href="javascript:void(0)" aria-expanded="true"><i class="fa fa-user"></i><span>Employee</span></a>
                         <ul class="collapse">
-                            <li><a href="{{ route('users.create') }}">Create User</a></li>
-                            <li><a href="{{ route('users.index') }}">Data User</a></li>
+                            <li><a href="{{ route('users.create') }}">Create Employee</a></li>
+                            <li><a href="{{ route('users.index') }}">Data Employee</a></li>
                         </ul>
                     </li>
                     <li>

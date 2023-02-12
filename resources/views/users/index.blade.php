@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
 @section('title')
-    <li><a href="{{ route('users.index') }}">Users</a></li>
+    <li><a href="{{ route('users.index') }}">Employee</a></li>
     <li><span>Index</span></li>
 @endsection
 
 @section('content')
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">Data Users</h3>
+        <h3 class="card-title">Data Employee</h3>
     </div>
     <div class="card-body">
         <table class="table table-bordered table-striped" id="usersTable">
