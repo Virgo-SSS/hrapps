@@ -21,19 +21,21 @@ class UserProfileSeeder extends Seeder
         $user = User::all();
 
         foreach($user as $u) {
-            $divisi = Divisi::inRandomOrder()->first();
-            $posisi = Posisi::inRandomOrder()->first();
+            if(!$user->has('profile')){
+                $divisi = Divisi::inRandomOrder()->first();
+                $posisi = Posisi::inRandomOrder()->first();
 
-            UserProfile::create([
-                'user_id'             => $u->id,
-                'divisi_id'           => $divisi->id,
-                'posisi_id'           => $posisi->id,
-                'bank'                => rand(1,6),
-                'bank_account_number' => '1234567890',
-                'join_date'           => fake()->date(),
-                'cuti'                => rand(10,30),
-                'salary'              => rand(100000, 5000000),
-            ]);
+                UserProfile::create([
+                    'user_id'             => $u->id,
+                    'divisi_id'           => $divisi->id,
+                    'posisi_id'           => $posisi->id,
+                    'bank'                => rand(1,6),
+                    'bank_account_number' => '1234567890',
+                    'join_date'           => fake()->date(),
+                    'cuti'                => rand(10,30),
+                    'salary'              => rand(100000, 5000000),
+                ]);
+            }
         }
     }
 }

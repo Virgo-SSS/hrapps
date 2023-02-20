@@ -2,11 +2,6 @@
 
 namespace App\Interfaces;
 
-use App\Http\Requests\StoreDivisiRequest;
-use App\Http\Requests\StorePosisiRequest;
-use App\Http\Requests\UpdateDivisiRequest;
-use App\Http\Requests\UpdatePosisiRequest;
-use App\Models\Divisi;
 use App\Models\Posisi;
 use Illuminate\Support\Collection;
 

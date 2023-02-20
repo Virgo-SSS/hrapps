@@ -19,6 +19,18 @@
                             <li><a href="{{ route('users.index') }}">Data Employee</a></li>
                         </ul>
                     </li>
+                    @can('view role')
+                        <li>
+                            <a href="javascript:void(0)" aria-expanded="true"><i class="fa fa-tags"></i><span>Role</span></a>
+                            <ul class="collapse">
+                                <li><a href="{{ route('permission.index') }}">Permissions</a></li>
+                                @can('create role')
+                                <li><a href="{{ route('role.create') }}">Create Role</a></li>
+                                @endcan
+                                <li><a href="{{ route('role.index') }}">Data Role</a></li>
+                            </ul>
+                        </li>
+                    @endcan
                     <li>
                         <a href="{{ route('divisi.index') }}" aria-expanded="true"><i class="fa fa-suitcase"></i><span>Divisi</span></a>
                     </li>

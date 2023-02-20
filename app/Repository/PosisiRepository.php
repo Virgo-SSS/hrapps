@@ -2,8 +2,6 @@
 
 namespace App\Repository;
 
-use App\Http\Requests\StorePosisiRequest;
-use App\Http\Requests\UpdatePosisiRequest;
 use App\Interfaces\PosisiRepositoryInterface;
 use App\Models\Posisi;
 use Illuminate\Support\Collection;

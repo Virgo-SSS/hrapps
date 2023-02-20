@@ -9,6 +9,8 @@ use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Plannr\Laravel\FastRefreshDatabase\Traits\FastRefreshDatabase;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -31,5 +33,22 @@ abstract class TestCase extends BaseTestCase
         ]);
 
         return $user;
+    }
+
+    public function createUserWithRoles(string $roles): User
+    {
+        $user = User::factory()->create();
+
+        Role::create(['name' => $roles]);
+        $user->assignRole($roles);
+
+        return $user;
+    }
+
+    public function assignPermission(string $permission, User $user): void
+    {
+        Permission::create(['name' => $permission]);
+
+        $user->givePermissionTo($permission);
     }
 }

@@ -201,6 +201,8 @@ return [
         App\Providers\UserProfileServiceProvider::class,
         App\Providers\CutiServiceProvider::class,
         App\Providers\CutiRequestServiceProvider::class,
+        App\Providers\RoleServiceProvider::class,
+        App\Providers\PermissionServiceProvider::class,
 
     ],
 

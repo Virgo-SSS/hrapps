@@ -38,7 +38,7 @@
         toastr.error("{{ Session::get('toastr-error') }}")
     @endif
 
-    function deleteItem(id,name) {
+    function deleteItem(form_id,name) {
         Swal.fire({
             title: 'Are you sure want to delete ' + name + '?',
             icon: 'warning',
@@ -48,7 +48,8 @@
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                $(id).submit();
+                console.log(form_id);
+                $(form_id).submit();
                 Swal.fire(
                     'Deleted!',
                     'success'
