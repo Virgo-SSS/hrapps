@@ -31,9 +31,9 @@ class UserTest extends TestCase
         $response->assertRedirect(route('login'));
     }
 
-    public function test_user_can_go_to_user_page_if_authenticated(): void
+    public function test_super_admin_can_redirect_to_user_page_if_authenticated(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $response = $this->actingAs($user)->get(route('users.index'));
 
         $response->assertStatus(200);
@@ -41,7 +41,18 @@ class UserTest extends TestCase
         $response->assertViewIs('users.index');
     }
 
-    public function test_user_cant_goto_user_create_page_if_not_authenticated(): void
+    public function test_user_can_redirect_to_user_page_if_authorized(): void
+    {
+        $user = $this->createUserWithRoles('employee');
+        $this->assignPermission('view user', $user);
+        $response = $this->actingAs($user)->get(route('users.index'));
+
+        $response->assertStatus(200);
+        $response->assertSeeText('Data Employee');
+        $response->assertViewIs('users.index');
+    }
+
+    public function test_user_cant_redirect_to_user_create_page_if_not_authenticated(): void
     {
         $response = $this->get(route('users.create'));
 
@@ -49,9 +60,9 @@ class UserTest extends TestCase
         $response->assertRedirect(route('login'));
     }
 
-    public function test_user_can_go_to_user_create_page_if_authenticated(): void
+    public function test_super_admin_can_redirect_create_user_page_if_authenticated(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $response = $this->actingAs($user)->get(route('users.create'));
 
         $response->assertStatus(200);
@@ -59,9 +70,31 @@ class UserTest extends TestCase
         $response->assertViewIs('users.create');
     }
 
+    public function test_user_can_redirect_to_create_user_page_if_authorized(): void
+    {
+        $user = $this->createUserWithRoles('employee');
+        $this->assignPermission('create user', $user);
+        $response = $this->actingAs($user)->get(route('users.create'));
+
+        $response->assertStatus(200);
+        $response->assertSeeText('Create Employee');
+        $response->assertViewIs('users.create');
+    }
+
+    public function test_user_cant_store_user_if_not_authorized(): void
+    {
+        $user = $this->createUserWithRoles('invalidRoles');
+        $this->assignPermission('invalidPermission', $user);
+        $request = $this->prepareRequest();
+
+        $response = $this->actingAs($user)->post(route('users.store'), $request);
+
+        $response->assertStatus(403);
+    }
+
     public function test_store_user_field_uuid_is_required(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
 
         $request = $this->prepareRequest();
         $request['uuid'] = null;
@@ -74,7 +107,7 @@ class UserTest extends TestCase
 
     public function test_store_user_field_uuid_is_unique(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
 
         $request = $this->prepareRequest();
         $request['uuid'] = $user->uuid;
@@ -87,7 +120,7 @@ class UserTest extends TestCase
 
     public function test_store_user_field_name_is_required(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $request = $this->prepareRequest();
         $request['name'] = null;
 
@@ -100,7 +133,7 @@ class UserTest extends TestCase
 
     public function test_store_user_field_name_must_be_string(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $request = $this->prepareRequest();;
         $request['name'] = 123;
 
@@ -112,7 +145,7 @@ class UserTest extends TestCase
 
     public function test_store_user_field_name_max_255(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
 
         $request = $this->prepareRequest();;
         $request['name'] = str_repeat('a', 256);
@@ -151,7 +184,7 @@ class UserTest extends TestCase
 
     public function test_store_user_field_password_must_string(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $request = $this->prepareRequest();
         $request['password'] = 123;
 
@@ -163,7 +196,7 @@ class UserTest extends TestCase
 
     public function test_store_user_field_email_is_required(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $request = $this->prepareRequest();
         $request['email'] = null;
 
@@ -175,7 +208,7 @@ class UserTest extends TestCase
 
     public function test_store_profile_field_bank_is_required(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $request = $this->prepareRequest();
@@ -189,7 +222,7 @@ class UserTest extends TestCase
 
     public function test_store_profile_field_bank_should_be_exists_in_config_bank(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $request = $this->prepareRequest();
@@ -202,7 +235,7 @@ class UserTest extends TestCase
 
     public function test_store_profile_field_bank_account_number_is_required(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $request = $this->prepareRequest();
@@ -216,7 +249,7 @@ class UserTest extends TestCase
 
     public function test_store_profile_field_bank_account_number_should_be_numeric(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         // set password field is visible
@@ -230,7 +263,7 @@ class UserTest extends TestCase
 
     public function test_store_profile_field_divisi_id_is_required(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $request = $this->prepareRequest();
@@ -244,7 +277,7 @@ class UserTest extends TestCase
 
     public function test_store_profile_field_divisi_id_is_integer(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $request = $this->prepareRequest();
@@ -258,7 +291,7 @@ class UserTest extends TestCase
 
     public function test_store_profile_field_divisi_id_should_be_exists_in_divisi_table(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $request = $this->prepareRequest();
@@ -272,7 +305,7 @@ class UserTest extends TestCase
 
     public function test_store_profile_field_posisi_id_is_required(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $request = $this->prepareRequest();
@@ -286,7 +319,7 @@ class UserTest extends TestCase
 
     public function test_store_profile_field_posisi_id_is_integer(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $request = $this->prepareRequest();
@@ -300,7 +333,7 @@ class UserTest extends TestCase
 
     public function test_store_profile_field_posisi_id_should_be_exists_in_posisi_table(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $request = $this->prepareRequest();
@@ -314,7 +347,7 @@ class UserTest extends TestCase
 
     public function test_store_profile_field_join_date_is_required(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $request = $this->prepareRequest();
@@ -328,7 +361,7 @@ class UserTest extends TestCase
 
     public function test_store_profile_field_join_date_is_date(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $request = $this->prepareRequest();
@@ -342,7 +375,7 @@ class UserTest extends TestCase
 
     public function test_store_profile_field_cuti_is_required(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $request = $this->prepareRequest();
@@ -356,7 +389,7 @@ class UserTest extends TestCase
 
     public function test_store_profile_field_cuti_is_integer(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $request = $this->prepareRequest();
@@ -370,7 +403,7 @@ class UserTest extends TestCase
 
     public function test_store_profile_field_salary_is_required(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $request = $this->prepareRequest();
@@ -384,7 +417,7 @@ class UserTest extends TestCase
 
     public function test_store_profile_field_salary_is_integer(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $request = $this->prepareRequest();
@@ -396,9 +429,9 @@ class UserTest extends TestCase
         $this->assertEquals('The salary must be a number.', session()->get('errors')->first('salary'));
     }
 
-    public function test_user_can_store_user_with_profile(): void
+    public function test_super_admin_can_store_user_with_profile(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $request = $this->prepareRequest();
@@ -427,9 +460,94 @@ class UserTest extends TestCase
         ]);
     }
 
+    public function test_user_can_store_user_with_profile_if_authorized(): void
+    {
+        $user = $this->createUserWithRoles('employee');
+        $this->assignPermission('create user', $user);
+        $this->actingAs($user);
+
+        $request = $this->prepareRequest();
+        $request['uuid'] = 12345090909; // unique
+
+        $response = $this->post(route('users.store'), $request);
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('users.index'));
+        $response->assertSessionHas('toastr-success', 'User Successfully Added');
+
+        $this->assertDatabaseHas('users', [
+            'uuid' => $request['uuid'],
+            'name' => $request['name'],
+            'email' => $request['email'],
+        ]);
+        $this->assertDatabaseHas('user_profile', [
+            'user_id' => User::where('uuid', $request['uuid'])->first()->id,
+            'divisi_id' => $request['divisi_id'],
+            'posisi_id' => $request['posisi_id'],
+            'bank' => $request['bank'],
+            'bank_account_number' => $request['bank_account_number'],
+            'join_date' => $request['join_date'],
+            'cuti' => $request['cuti'],
+            'salary' => $request['salary'],
+        ]);
+    }
+
+    public function test_user_cant_redirect_to_edit_user_page_if_not_authenticated(): void
+    {
+        $user = $this->createUserWithRoles('employee');
+
+        $response = $this->get(route('users.edit', $user->id));
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('login'));
+    }
+
+    public function test_super_admin_can_redirect_to_edit_user_page(): void
+    {
+        $user = $this->createUserWithRoles('super admin');
+        UserProfile::factory()->create([
+            'user_id' => $user->id
+        ]);
+        $this->actingAs($user);
+
+        $response = $this->get(route('users.edit', $user->id));
+
+        $response->assertStatus(200);
+        $response->assertViewIs('users.edit');
+    }
+
+    public function test_user_can_redirect_to_edit_user_page_if_authorized(): void
+    {
+          $user = $this->createUserWithRoles('employee');
+          $this->assignPermission('edit user', $user);
+          UserProfile::factory()->create([
+                'user_id' => $user->id
+          ]);
+          $this->actingAs($user);
+
+          $response = $this->get(route('users.edit', $user->id));
+
+          $response->assertStatus(200);
+          $response->assertViewIs('users.edit');
+    }
+
+    public function test_user_cant_redirect_to_edit_user_page_if_not_authorized(): void
+    {
+        $user = $this->createUserWithRoles('invalidRole');
+        $this->assignPermission('invalidPermission', $user);
+        UserProfile::factory()->create([
+            'user_id' => $user->id
+        ]);
+        $this->actingAs($user);
+
+        $response = $this->get(route('users.edit', $user->id));
+
+        $response->assertStatus(403);
+    }
+
     public function test_cant_update_user_if_not_authenticated(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
 
         $request = $this->prepareRequest();
         $request['uuid'] = 12345090909; // unique
@@ -440,9 +558,23 @@ class UserTest extends TestCase
         $response->assertRedirect(route('login'));
     }
 
+    public function test_user_cant_update_if_not_authorized(): void
+    {
+        $user = $this->createUserWithRoles('invalidRole');
+        $this->assignPermission('invalidPermission', $user);
+        $this->actingAs($user);
+
+        $request = $this->prepareRequest();
+        $request['uuid'] = 12345090909; // unique
+
+        $response = $this->put(route('users.update', $user->id), $request);
+
+        $response->assertStatus(403);
+    }
+
     public function test_update_user_field_uuid_is_required(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $request = $this->prepareRequest();
@@ -456,10 +588,10 @@ class UserTest extends TestCase
 
     public function test_update_user_field_uuid_is_unique(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
-        $user2 = User::factory()->create();
+        $user2 = $this->createUserWithRoles('employee');
         $request = $this->prepareRequest();
         $request['uuid'] = $user2->uuid;
 
@@ -471,7 +603,7 @@ class UserTest extends TestCase
 
     public function test_update_user_field_name_is_required(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $request = $this->prepareRequest();
@@ -485,7 +617,7 @@ class UserTest extends TestCase
 
     public function test_update_user_field_name_is_string(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $request = $this->prepareRequest();
@@ -499,7 +631,7 @@ class UserTest extends TestCase
 
     public function test_update_user_field_email_is_required(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $request = $this->prepareRequest();
@@ -513,10 +645,10 @@ class UserTest extends TestCase
 
     public function test_update_user_field_email_is_unique(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
-        $user2 = User::factory()->create();
+        $user2 = $this->createUserWithRoles('employee');
         $request = $this->prepareRequest();
         $request['email'] = $user2->email;
 
@@ -528,7 +660,7 @@ class UserTest extends TestCase
 
     public function test_update_user_field_email_is_email(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $request = $this->prepareRequest();
@@ -542,7 +674,7 @@ class UserTest extends TestCase
 
     public function test_update_user_field_bank_is_required(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $request = $this->prepareRequest();
@@ -556,7 +688,7 @@ class UserTest extends TestCase
 
     public function test_update_user_field_bank_is_integer(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $request = $this->prepareRequest();
@@ -570,7 +702,7 @@ class UserTest extends TestCase
 
     public function test_update_user_field_bank_must_exists(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $request = $this->prepareRequest();
@@ -584,7 +716,7 @@ class UserTest extends TestCase
 
     public function test_update_user_field_bank_account_number_is_required(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $request = $this->prepareRequest();
@@ -598,7 +730,7 @@ class UserTest extends TestCase
 
     public function test_update_user_field_bank_account_number_is_numeric(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $request = $this->prepareRequest();
@@ -612,7 +744,7 @@ class UserTest extends TestCase
 
     public function test_update_user_field_divisi_id_is_required(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $request = $this->prepareRequest();
@@ -626,7 +758,7 @@ class UserTest extends TestCase
 
     public function test_update_user_field_divisi_id_is_integer(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $request = $this->prepareRequest();
@@ -640,7 +772,7 @@ class UserTest extends TestCase
 
     public function test_update_user_field_divisi_id_is_exists(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $request = $this->prepareRequest();
@@ -654,7 +786,7 @@ class UserTest extends TestCase
 
     public function test_update_user_field_posisi_id_is_required(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $request = $this->prepareRequest();
@@ -668,7 +800,7 @@ class UserTest extends TestCase
 
     public function test_update_user_field_posisi_id_is_integer(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $request = $this->prepareRequest();
@@ -682,7 +814,7 @@ class UserTest extends TestCase
 
     public function test_update_user_field_posisi_id_is_exists(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $request = $this->prepareRequest();
@@ -696,7 +828,7 @@ class UserTest extends TestCase
 
     public function test_update_user_field_join_date_is_required(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $request = $this->prepareRequest();
@@ -710,7 +842,7 @@ class UserTest extends TestCase
 
     public function test_update_user_field_join_date_is_date(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $request = $this->prepareRequest();
@@ -724,7 +856,7 @@ class UserTest extends TestCase
 
     public function test_update_user_field_cuti_is_required(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $request = $this->prepareRequest();
@@ -738,7 +870,7 @@ class UserTest extends TestCase
 
     public function test_update_user_field_cuti_is_integer(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $request = $this->prepareRequest();
@@ -752,7 +884,7 @@ class UserTest extends TestCase
 
     public function test_update_user_field_salary_is_required(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $request = $this->prepareRequest();
@@ -766,7 +898,7 @@ class UserTest extends TestCase
 
     public function test_update_user_field_salary_is_numeric(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $request = $this->prepareRequest();
@@ -780,7 +912,42 @@ class UserTest extends TestCase
 
     public function test_can_update_user_if_authenticated(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
+        $this->actingAs($user);
+
+        UserProfile::factory()->create([
+            'user_id' => $user->id
+        ]);
+
+        $request = $this->prepareRequest();
+        $request['name'] = 'test update';
+        $request['join_date'] = '2021-01-01';
+
+        $response = $this->put(route('users.update', $user->id), $request);
+
+        $response->assertRedirect(route('users.index'));
+        $response->assertSessionHas('toastr-success', 'User Successfully Updated');
+
+        $this->assertDatabaseHas('users', [
+            'uuid' => $request['uuid'],
+            'name' => $request['name'],
+            'email' => $request['email'],
+        ]);
+
+        $this->assertDatabaseHas('user_profile', [
+            'user_id' => $user->id,
+            'divisi_id' => $request['divisi_id'],
+            'posisi_id' => $request['posisi_id'],
+            'join_date' => $request['join_date'],
+            'cuti' => $request['cuti'],
+            'salary' => $request['salary'],
+        ]);
+    }
+
+    public function test_user_can_update_user_if_authorized(): void
+    {
+        $user = $this->createUserWithRoles('employee');
+        $this->assignPermission('edit user', $user);
         $this->actingAs($user);
 
         UserProfile::factory()->create([
@@ -814,7 +981,7 @@ class UserTest extends TestCase
 
     public function test_cant_delete_user_if_not_authenticated(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
 
         $response = $this->delete(route('users.destroy', $user->id));
 
@@ -822,9 +989,20 @@ class UserTest extends TestCase
         $response->assertRedirect(route('login'));
     }
 
-    public function test_can_delete_user_if_authenticated(): void
+    public function test_cant_delete_user_if_not_authorized(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('invalidROles');
+        $this->assignPermission('invalidPermission', $user);
+        $this->actingAs($user);
+
+        $response = $this->delete(route('users.destroy', $user->id));
+
+        $response->assertStatus(403);
+    }
+
+    public function test_super_admin_can_delete_user(): void
+    {
+        $user = $this->createUserWithRoles('super admin');
         UserProfile::factory()->create([
             'user_id' => $user->id
         ]);
@@ -844,4 +1022,27 @@ class UserTest extends TestCase
             'user_id' => $user->id,
         ]);
     }
+
+    public function test_user_can_delete_if_authorized(): void
+    {
+        $user = $this->createUserWithRoles('employee');
+        $this->assignPermission('delete user', $user);
+        UserProfile::factory()->create([
+            'user_id' => $user->id
+        ]);
+
+        $this->actingAs($user);
+
+        $response = $this->delete(route('users.destroy', $user->id));
+
+        $response->assertRedirect(route('users.index'));
+        $response->assertSessionHas('toastr-success', 'User Successfully Deleted');
+
+        $this->assertDatabaseMissing('users', [
+            'id' => $user->id,
+        ]);
+
+        $this->assertDatabaseMissing('user_profile', [
+            'user_id' => $user->id,
+        ]); }
 }

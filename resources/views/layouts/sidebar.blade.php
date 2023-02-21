@@ -2,7 +2,12 @@
 <div class="sidebar-menu">
     <div class="sidebar-header">
         <div class="logo">
-            <a href="index.html"><img src="{{ asset('assets/images/icon/logo.png') }}" alt="logo"></a>
+            <a href="{{ route('home') }}" style="text-decoration: none">
+                <span style="font-size:30px;color:white; font-family: 'Lucida Bright'; font-weight: bold">
+                    PT. ABP
+                </span>
+                {{--  <img src="{{ asset('assets/images/icon/logo.png') }}" alt="logo">--}}
+            </a>
         </div>
     </div>
     <div class="main-menu">
