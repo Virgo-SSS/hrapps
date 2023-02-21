@@ -33,18 +33,22 @@
                                             </td>
                                             <td>{{ $role->created_at }}</td>
                                             <td>
-                                                <a href="{{ route('role.edit', $role->id) }}">
-                                                    <i class="ti-pencil" style="font-size: 17px; color: mediumblue"></i>
-                                                </a>
-                                                 <span class="mr-1 ml-1">|</span>
-                                                <a href="#" onclick="deleteItem('#deleteRole-{{ $role->id }}','{{ $role->name }}')">
-                                                    <i class="ti-trash" style="font-size:17px; color: red"></i>
-                                                </a>
+                                                @if($role->name != 'super admin')
+                                                    <a href="{{ route('role.edit', $role->id) }}">
+                                                        <i class="ti-pencil" style="font-size: 17px; color: mediumblue"></i>
+                                                    </a>
+                                                    <span class="mr-1 ml-1">|</span>
+                                                    <a href="#" onclick="deleteItem('#deleteRole-{{ $role->id }}','{{ $role->name }}')">
+                                                        <i class="ti-trash" style="font-size:17px; color: red"></i>
+                                                    </a>
+                                                    <form action="{{ route('role.destroy', $role->id) }}" method="POST" id="deleteRole-{{ $role->id }}">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                    </form>
+                                                @else
+                                                    <p>Can't edit or delete</p>
+                                                @endif
                                             </td>
-                                            <form action="{{ route('role.destroy', $role->id) }}" method="POST" id="deleteRole-{{ $role->id }}">
-                                                @csrf
-                                                @method('DELETE')
-                                            </form>
                                         </tr>
                                     @endforeach
                                 </tbody>

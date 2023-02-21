@@ -21,6 +21,8 @@ class RoleController extends Controller
     {
         $this->repository = $repository;
         $this->permissionRepository = $permissionRepository;
+
+        $this->middleware('roleEdit')->only(['edit', 'update', 'destroy']);
     }
 
     public function index(): View

@@ -603,4 +603,45 @@ class RoleTest extends TestCase
         $response->assertSessionHas('toastr-success', 'Role deleted successfully.');
         $this->assertNull($role->fresh());
     }
+
+    public function test_user_cant_redirect_to_edit_super_admin_role(): void
+    {
+        $user = $this->createUserWithRoles('employee');
+        $this->assignPermission('edit role', $user);
+        $this->actingAs($user);
+
+        $role = Role::create(['name' => 'super admin']);
+
+        $response = $this->get(route('role.edit', $role->id));
+
+        $response->assertStatus(403);
+    }
+
+    public function test_user_cant_update_super_admin_role(): void
+    {
+        $user = $this->createUserWithRoles('employee');
+        $this->assignPermission('edit role', $user);
+        $this->actingAs($user);
+
+        $role = Role::create(['name' => 'super admin']);
+
+        $response = $this->put(route('role.update', $role->id), [
+            'name' => 'test roles123',
+        ]);
+
+        $response->assertStatus(403);
+    }
+
+    public function test_user_cant_delete_super_admin_role(): void
+    {
+        $user = $this->createUserWithRoles('employee');
+        $this->assignPermission('delete role', $user);
+        $this->actingAs($user);
+
+        $role = Role::create(['name' => 'super admin']);
+
+        $response = $this->delete(route('role.destroy', $role->id));
+
+        $response->assertStatus(403);
+    }
 }
