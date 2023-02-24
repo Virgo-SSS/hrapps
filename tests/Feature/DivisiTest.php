@@ -18,9 +18,32 @@ class DivisiTest extends TestCase
         $response->assertRedirect(route('login'));
     }
 
+    public function test_user_cant_access_if_user_not_authorized(): void
+    {
+        $user = $this->createUserWithRoles('invalidRoles');
+        $this->assignPermission('invalidPermission', $user);
+        $this->actingAs($user);
+
+        $response = $this->get(route('divisi.index'));
+
+        $response->assertStatus(403);
+    }
+
+    public function test_super_admin_can_access_divisi_page_if_authenticated(): void
+    {
+        $user  = $this->createUserWithRoles('super admin');
+        $this->actingAs($user);
+
+        $response = $this->get(route('divisi.index'));
+
+        $response->assertStatus(200);
+        $response->assertSeeText('Data Divisi');
+    }
+
     public function test_user_can_access_divisi_page_if_user_authenticated(): void
     {
-        $user  = User::factory()->create();
+        $user  = $this->createUserWithRoles('employee');
+        $this->assignPermission('view division', $user);
         $this->actingAs($user);
 
         $response = $this->get(route('divisi.index'));
@@ -44,7 +67,7 @@ class DivisiTest extends TestCase
 
     public function test_store_divisi_field_name_required(): void
     {
-        $user  = User::factory()->create();
+        $user  = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $response = $this->post(route('divisi.store'), [
@@ -57,7 +80,7 @@ class DivisiTest extends TestCase
 
     public function test_store_divisi_field_name_cant_has_duplicate_name(): void
     {
-        $user  = User::factory()->create();
+        $user  = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $divisi = Divisi::factory()->create();
@@ -72,7 +95,7 @@ class DivisiTest extends TestCase
 
     public function test_store_divisi_field_name_cant_more_than_255(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $response = $this->post(route('divisi.store'), [
@@ -85,7 +108,7 @@ class DivisiTest extends TestCase
 
     public function test_store_divisi_field_name_should_be_string(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $response = $this->post(route('divisi.store'), [
@@ -96,9 +119,43 @@ class DivisiTest extends TestCase
         $this->assertEquals('The name must be a string.', session()->get('errors')->first('name'));
     }
 
-    public function test_user_can_create_divisi_if_user_authenticated(): void
+    public function test_user_cant_create_divisi_if_user_not_authorized(): void
     {
-        $user  = User::factory()->create();
+        $user = $this->createUserWithRoles('invalidRoles');
+        $this->assignPermission('invalidPermission', $user);
+        $this->actingAs($user);
+
+        $response = $this->post(route('divisi.store'), [
+            'name' => 'Divisi 1',
+        ]);
+
+        $response->assertStatus(403);
+        $this->assertDatabaseMissing('divisi', [
+            'name' => 'Divisi 1',
+        ]);
+    }
+
+    public function test_super_admin_can_create_divisi_if_authenticated(): void
+    {
+        $user  = $this->createUserWithRoles('super admin');
+        $this->actingAs($user);
+
+        $response = $this->post(route('divisi.store'), [
+            'name' => 'Divisi 1',
+        ]);
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('divisi.index'));
+        $response->assertSessionHas('toastr-success', 'Divisi Successfully Created');
+        $this->assertDatabaseHas('divisi', [
+            'name' => 'divisi 1'
+        ]);
+    }
+
+    public function test_user_can_create_divisi_if_authorized(): void
+    {
+        $user  = $this->createUserWithRoles('employee');
+        $this->assignPermission('create division', $user);
         $this->actingAs($user);
 
         $response = $this->post(route('divisi.store'), [
@@ -130,7 +187,7 @@ class DivisiTest extends TestCase
 
     public function test_update_divisi_field_name_required(): void
     {
-        $user  = User::factory()->create();
+        $user  = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $divisi = Divisi::factory()->create();
@@ -146,7 +203,7 @@ class DivisiTest extends TestCase
 
     public function test_update_divisi_field_is_active_required(): void
     {
-        $user  = User::factory()->create();
+        $user  = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $divisi = Divisi::factory()->create();
@@ -162,7 +219,7 @@ class DivisiTest extends TestCase
 
     public function test_update_divisi_field_is_active_must_boolean(): void
     {
-        $user  = User::factory()->create();
+        $user  = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $divisi = Divisi::factory()->create();
@@ -178,7 +235,7 @@ class DivisiTest extends TestCase
 
     public function test_update_divisi_field_name_cant_has_duplicate_name(): void
     {
-        $user  = User::factory()->create();
+        $user  = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $divisi1 = Divisi::factory()->create();
@@ -195,7 +252,7 @@ class DivisiTest extends TestCase
 
     public function test_update_divisi_field_name_cant_more_than_255(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $divisi = Divisi::factory()->create();
@@ -210,7 +267,7 @@ class DivisiTest extends TestCase
 
     public function test_update_divisi_field_name_should_be_string(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $divisi = Divisi::factory()->create();
@@ -222,9 +279,28 @@ class DivisiTest extends TestCase
         $this->assertEquals('The name must be a string.', session()->get('errors')->first('name'));
     }
 
-    public function test_user_can_update_name_divisi_if_user_authenticated(): void
+    public function test_user_cant_update_divisi_if_user_unauthorized(): void
     {
-        $user = User::factory()->create();
+        $user  = $this->createUserWithRoles('invalidRoles');
+        $this->assignPermission('invalidPermission', $user);
+        $this->actingAs($user);
+
+        $divisi = Divisi::factory()->create();
+
+        $response = $this->put(route('divisi.update', $divisi), [
+            'name' => 'Edit Divisi 1',
+            'is_active' => $divisi->is_active,
+        ]);
+
+        $response->assertStatus(403);
+        $this->assertDatabaseMissing('divisi', [
+            'name' => 'Edit Divisi 1',
+        ]);
+    }
+
+    public function test_super_admin_can_update_name_divisi_if_user_authenticated(): void
+    {
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $divisi = Divisi::factory()->create();
@@ -242,9 +318,52 @@ class DivisiTest extends TestCase
         ]);
     }
 
-    public function test_user_can_update_is_active_if_user_authenticated(): void
+    public function test_super_admin_can_update_is_active_if_user_authenticated(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
+        $this->actingAs($user);
+
+        $divisi = Divisi::factory()->create();
+        $response = $this->put(route('divisi.update', $divisi), [
+            'name' => $divisi->name,
+            'is_active' => false,
+        ]);
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('divisi.index'));
+        $response->assertSessionHas('toastr-success', 'Divisi Successfully Updated');
+        $this->assertDatabaseHas('divisi', [
+            'name' => $divisi->name,
+            'is_active' => false,
+            'edited_by' => $user->id,
+        ]);
+    }
+
+    public function test_user_can_update_name_divisi_if_user_authorizec(): void
+    {
+        $user = $this->createUserWithRoles('employee');
+        $this->assignPermission('edit division', $user);
+        $this->actingAs($user);
+
+        $divisi = Divisi::factory()->create();
+        $response = $this->put(route('divisi.update', $divisi), [
+            'name' => 'Edit Divisi 1',
+            'is_active' => $divisi->is_active,
+        ]);
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('divisi.index'));
+        $response->assertSessionHas('toastr-success', 'Divisi Successfully Updated');
+        $this->assertDatabaseHas('divisi', [
+            'name' => 'Edit Divisi 1',
+            'edited_by' => $user->id,
+        ]);
+    }
+
+    public function test_user_can_update_is_active_if_user_authorizec(): void
+    {
+        $user = $this->createUserWithRoles('employee');
+        $this->assignPermission('edit division', $user);
         $this->actingAs($user);
 
         $divisi = Divisi::factory()->create();
@@ -276,9 +395,42 @@ class DivisiTest extends TestCase
         ]);
     }
 
-    public function test_user_can_delete_divisi_if_user_authenticated(): void
+    public function test_user_cant_delete_divisi_if_user_unauthorized(): void
     {
-        $user = User::factory()->create();
+        $user  = $this->createUserWithRoles('invalidRoles');
+        $this->assignPermission('invalidPermission', $user);
+        $this->actingAs($user);
+
+        $divisi = Divisi::factory()->create();
+
+        $response = $this->delete(route('divisi.destroy', $divisi));
+
+        $response->assertStatus(403);
+        $this->assertDatabaseHas('divisi', [
+            'id' => $divisi->id,
+        ]); }
+
+    public function test_super_admin_can_delete_divisi_if_user_authenticated(): void
+    {
+        $user = $this->createUserWithRoles('super admin');
+        $this->actingAs($user);
+
+        $divisi = Divisi::factory()->create();
+
+        $response = $this->delete(route('divisi.destroy', $divisi));
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('divisi.index'));
+        $response->assertSessionHas('toastr-success', 'Divisi Successfully Deleted');
+        $this->assertDatabaseMissing('divisi', [
+            'id' => $divisi->id,
+        ]);
+    }
+
+    public function test_user_can_delete_divisi_if_user_authorized(): void
+    {
+        $user = $this->createUserWithRoles('employee');
+        $this->assignPermission('delete division', $user);
         $this->actingAs($user);
 
         $divisi = Divisi::factory()->create();
