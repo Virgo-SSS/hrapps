@@ -29,20 +29,10 @@ class PosisiController extends Controller
         return view('posisi.index', compact('posisis','divisis'));
     }
 
-    public function create()
-    {
-        //
-    }
-
     public function store(StorePosisiRequest $request): RedirectResponse
     {
         $this->repository->store($request->validated());
         return redirect()->route('posisi.index')->with('toastr-success', 'Posisi Successfully Created');
-    }
-
-    public function show(Posisi $posisi)
-    {
-        //
     }
 
     public function edit(Posisi $posisi): View
@@ -63,7 +53,6 @@ class PosisiController extends Controller
         $this->repository->delete($posisi);
         return redirect()->route('posisi.index')->with('toastr-success', 'Posisi Successfully Deleted');
     }
-
 
     public function getPosisiByDivisi(int $divisi_id): JsonResponse
     {

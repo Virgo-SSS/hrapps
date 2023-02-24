@@ -28,6 +28,10 @@ class PermissionSeeder extends Seeder
             'create user',
             'edit user',
             'delete user',
+            'view divisi',
+            'create divisi',
+            'edit divisi',
+            'delete divisi',
         ];
 
         foreach ($permission as $key => $value) {
