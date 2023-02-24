@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateCutiRequest;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
 class CutiController extends Controller
@@ -22,51 +23,48 @@ class CutiController extends Controller
 
     public function index(): View
     {
+        abort_if(!Gate::allows('view cuti'), 403);
+
         $cutis = $this->repository->getCuti();
         return view('cuti.index', compact('cutis'));
     }
 
     public function create(): View
     {
+        abort_if(!Gate::allows('create cuti'), 403);
+
         $users = User::all();
         return view('cuti.create', compact('users'));
     }
 
-    public function request()
+    public function request(): view
     {
+        abort_if(!Gate::allows('view cuti'), 403);
+
         $pendingCutis = $this->repository->getPendingCuti();
         return view('cuti.request', compact('pendingCutis'));
     }
 
     public function store(StoreCutiRequest $request): RedirectResponse
     {
+        abort_if(!Gate::allows('create cuti'), 403);
+
         $this->repository->store($request->all());
         return redirect()->route('cuti.index')->with('toastr-success', 'Cuti created successfully.');
     }
 
     public function show(Cuti $cuti): View
     {
+        abort_if(!Gate::allows('view cuti'), 403);
+
         return view('cuti.detail', compact('cuti'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Cuti  $cuti
-     * @return \Illuminate\Http\Response
-     */
     public function edit(Cuti $cuti)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateCutiRequest  $request
-     * @param  \App\Models\Cuti  $cuti
-     * @return \Illuminate\Http\Response
-     */
     public function update(UpdateCutiRequest $request, Cuti $cuti)
     {
         //
@@ -74,6 +72,8 @@ class CutiController extends Controller
 
     public function destroy(Cuti $cuti): RedirectResponse
     {
+        abort_if(!Gate::allows('delete cuti'), 403);
+
         $this->repository->delete($cuti->id);
         return redirect()->route('cuti.index')->with('toastr-success', 'Cuti deleted successfully.');
     }
