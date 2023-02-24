@@ -19,9 +19,33 @@ class PosisiTest extends TestCase
         $response->assertRedirect(route('login'));
     }
 
-    public function test_user_can_go_to_posisi_page_if_authenticated(): void
+    public function test_user_cant_redirect_to_posisi_page_if_unauthorized(): void
     {
-        $user = User::factory()->create();
+        $user =  $this->createUserWithRoles('invalidRoles');
+        $this->assignPermission('invalidpermission', $user);
+        $this->actingAs($user);
+
+        $response = $this->actingAs($user)->get(route('posisi.index'));
+
+        $response->assertStatus(403);
+    }
+
+    public function test_super_admin_can_redirect_to_posisi_page(): void
+    {
+        $user = $this->createUserWithRoles('super admin');
+        $this->actingAs($user);
+
+        $response = $this->get(route('posisi.index'));
+
+        $response->assertStatus(200);
+        $response->assertViewIs('posisi.index');
+        $response->assertSeeText('Data Posisi');
+    }
+
+    public function test_user_can_redirect_to_posisi_page_if_authorized(): void
+    {
+        $user = $this->createUserWithRoles('employee');
+        $this->assignPermission('view posisi', $user);
         $this->actingAs($user);
 
         $response = $this->get(route('posisi.index'));
@@ -42,9 +66,24 @@ class PosisiTest extends TestCase
         $response->assertRedirect(route('login'));
     }
 
+    public function test_user_cant_store_posisi_if_unauthorized(): void
+    {
+        $user =  $this->createUserWithRoles('invalidRoles');
+        $this->assignPermission('invalidpermission', $user);
+        $this->actingAs($user);
+
+        $divisi  = Divisi::factory()->create();
+        $response = $this->post(route('posisi.store'), [
+            'name' => 'Posisi 1',
+            'divisi_id' => $divisi->id,
+        ]);
+
+        $response->assertStatus(403);
+    }
+
     public function test_store_posisi_field_name_required(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $response = $this->post(route('posisi.store'), [
@@ -59,7 +98,7 @@ class PosisiTest extends TestCase
 
     public function test_store_posisi_field_name_max_255(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $response = $this->post(route('posisi.store'), [
@@ -74,7 +113,7 @@ class PosisiTest extends TestCase
 
     public function test_store_posisi_field_name_must_be_string(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $response = $this->post(route('posisi.store'), [
@@ -89,7 +128,7 @@ class PosisiTest extends TestCase
 
     public function test_store_posisi_field_divisi_required(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $response = $this->post(route('posisi.store'), [
@@ -104,7 +143,7 @@ class PosisiTest extends TestCase
 
     public function test_store_posisi_field_divisi_exist_at_database(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $response = $this->post(route('posisi.store'), [
@@ -119,7 +158,7 @@ class PosisiTest extends TestCase
 
     public function test_store_posisi_field_divisi_must_be_integer(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $response = $this->post(route('posisi.store'), [
@@ -132,9 +171,30 @@ class PosisiTest extends TestCase
         $this->assertEquals('The divisi id must be an integer.', session()->get('errors')->first('divisi_id'));
     }
 
-    public function test_user_can_store_posisi_if_authenticated(): void
+    public function test_super_admin_can_store_posisi(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
+        $this->actingAs($user);
+
+        $divisi = Divisi::factory(1)->create();
+        $response = $this->post(route('posisi.store'), [
+            'name' => 'Posisi 1',
+            'divisi_id' => $divisi->first()->id
+        ]);
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('posisi.index'));
+        $response->assertSessionHas('toastr-success', 'Posisi Successfully Created');
+        $this->assertDatabaseHas('posisi', [
+            'name' => 'Posisi 1',
+            'divisi_id' => $divisi->first()->id
+        ]);
+    }
+
+    public function test_user_can_store_posisi_if_authorized(): void
+    {
+        $user = $this->createUserWithRoles('employee');
+        $this->assignPermission('create posisi', $user);
         $this->actingAs($user);
 
         $divisi = Divisi::factory(1)->create();
@@ -163,9 +223,29 @@ class PosisiTest extends TestCase
         $response->assertRedirect(route('login'));
     }
 
+    public function test_user_cant_update_posisi_if_unauthorized(): void
+    {
+        $user = $this->createUserWithRoles('invalidRoles');
+        $this->assignPermission('invalid permission', $user);
+        $this->actingAs($user);
+
+        $divisi = Divisi::factory(1)->create();
+        $posisi = Posisi::factory(1)->create([
+            'divisi_id' => $divisi->first()->id
+        ]);
+
+        $response = $this->put(route('posisi.update', $posisi->first()->id), [
+            'name' => 'Posisi 1',
+            'divisi_id' => $divisi->first()->id,
+            'is_active' => true,
+        ]);
+
+        $response->assertStatus(403);
+    }
+
     public function test_update_posisi_field_name_required(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $posisi = Posisi::factory(1)->create();
@@ -183,7 +263,7 @@ class PosisiTest extends TestCase
 
     public function test_update_posisi_field_name_max_255(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $posisi = Posisi::factory(1)->create();
@@ -201,7 +281,7 @@ class PosisiTest extends TestCase
 
     public function test_update_posisi_field_name_must_be_string(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $posisi = Posisi::factory(1)->create();
@@ -219,7 +299,7 @@ class PosisiTest extends TestCase
 
     public function test_update_posisi_field_divisi_required(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $posisi = Posisi::factory(1)->create();
@@ -236,7 +316,7 @@ class PosisiTest extends TestCase
 
     public function test_update_posisi_field_divisi_exist_at_database(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $posisi = Posisi::factory(1)->create();
@@ -253,7 +333,7 @@ class PosisiTest extends TestCase
 
     public function test_update_posisi_field_divisi_must_be_integer(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $posisi = Posisi::factory(1)->create();
@@ -270,7 +350,7 @@ class PosisiTest extends TestCase
 
     public function test_update_posisi_field_is_active_required(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $posisi = Posisi::factory(1)->create();
@@ -288,7 +368,7 @@ class PosisiTest extends TestCase
 
     public function test_update_posisi_field_is_active_boolean(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $posisi = Posisi::factory(1)->create();
@@ -304,9 +384,9 @@ class PosisiTest extends TestCase
         $this->assertEquals('The is active field must be true or false.', session()->get('errors')->first('is_active'));
     }
 
-    public function test_user_can_update_posisi_if_authenticated(): void
+    public function test_super_admin_can_update_posisi(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('super admin');
         $this->actingAs($user);
 
         $posisi = Posisi::factory(1)->create();
@@ -325,7 +405,30 @@ class PosisiTest extends TestCase
             'divisi_id' => $divisi->first()->id,
             'is_active' => true,
         ]);
+    }
 
+    public function test_user_can_update_posisi_if_authorized(): void
+    {
+        $user = $this->createUserWithRoles('employee');
+        $this->assignPermission('edit posisi', $user);
+        $this->actingAs($user);
+
+        $posisi = Posisi::factory(1)->create();
+        $divisi = Divisi::factory(1)->create();
+        $response = $this->put(route('posisi.update', $posisi->first()->id), [
+            'name' => 'Posisi 1',
+            'divisi_id' => $divisi->first()->id,
+            'is_active' => true,
+        ]);
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('posisi.index'));
+        $response->assertSessionHas('toastr-success', 'Posisi Successfully Updated');
+        $this->assertDatabaseHas('posisi', [
+            'name' => 'Posisi 1',
+            'divisi_id' => $divisi->first()->id,
+            'is_active' => true,
+        ]);
     }
 
    public function test_user_cant_delete_posisi_if_not_authenticated(): void
@@ -337,9 +440,38 @@ class PosisiTest extends TestCase
          $response->assertRedirect(route('login'));
    }
 
-    public function test_user_can_delete_posisi_if_authenticated(): void
+    public function test_user_cant_update_delete_posisi_if_authorized(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('invalidRoles');
+        $this->assignPermission('edit posisi', $user);
+        $this->actingAs($user);
+
+        $posisi = Posisi::factory(1)->create();
+        $response = $this->delete(route('posisi.destroy', $posisi->first()->id));
+
+        $response->assertStatus(403);
+    }
+
+    public function test_super_admin_can_delete_posisi_if_authenticated(): void
+    {
+        $user = $this->createUserWithRoles('super admin');
+        $this->actingAs($user);
+
+        $posisi = Posisi::factory(1)->create();
+        $response = $this->delete(route('posisi.destroy', $posisi->first()->id));
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('posisi.index'));
+        $response->assertSessionHas('toastr-success', 'Posisi Successfully Deleted');
+        $this->assertDatabaseMissing('posisi', [
+            'id' => $posisi->first()->id,
+        ]);
+    }
+
+    public function test_user_can_delete_posisi_if_unauthorized(): void
+    {
+        $user = $this->createUserWithRoles('employee');
+        $this->assignPermission('delete posisi', $user);
         $this->actingAs($user);
 
         $posisi = Posisi::factory(1)->create();
@@ -355,7 +487,8 @@ class PosisiTest extends TestCase
 
     public function test_get_posisi_data_by_divisi_with_json(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUserWithRoles('employee');
+        $this->assignPermission('view posisi', $user);
         $this->actingAs($user);
 
         $divisi = Divisi::factory(1)->create();
