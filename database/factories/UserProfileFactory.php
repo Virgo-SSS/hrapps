@@ -13,6 +13,10 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class UserProfileFactory extends Factory
 {
+    private int $divisi_id;
+
+    private int $posisi_id;
+
     /**
      * Define the model's default state.
      *
@@ -20,10 +24,12 @@ class UserProfileFactory extends Factory
      */
     public function definition()
     {
+        $this->setDivisiAndPosisi();
+
         return [
             'user_id'             => $this->getUserId(),
-            'divisi_id'           => $this->getDivisiId(),
-            'posisi_id'           => $this->getPosisiId(),
+            'divisi_id'           => $this->divisi_id,
+            'posisi_id'           => $this->posisi_id,
             'bank'                => rand(1,6),
             'bank_account_number' => '1234567890',
             'join_date'           => $this->faker->date(),
@@ -32,18 +38,21 @@ class UserProfileFactory extends Factory
         ];
     }
 
-    private function getUserId()
+    private function setDivisiAndPosisi(): void
+    {
+        $posisi = Posisi::inRandomOrder()->first();
+        if($posisi) {
+            $this->divisi_id = $posisi->divisi_id;
+            $this->posisi_id = $posisi->id;
+        }else {
+            $posisi = Posisi::factory()->create();
+            $this->divisi_id = $posisi->divisi_id;
+            $this->posisi_id = $posisi->id;
+        }
+    }
+
+    private function getUserId(): int
     {
         return User::factory()->create()->id;
-    }
-
-    private function getDivisiId()
-    {
-        return Divisi::factory()->create()->id;
-    }
-
-    private function getPosisiId()
-    {
-        return Posisi::factory()->create()->id;
     }
 }

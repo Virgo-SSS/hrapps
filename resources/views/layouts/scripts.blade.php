@@ -38,6 +38,14 @@
         toastr.error("{{ Session::get('toastr-error') }}")
     @endif
 
+    @if(Session::has('swal-error'))
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: "{{ Session::get('swal-error') }}",
+        })
+    @endif
+
     function deleteItem(form_id,name) {
         Swal.fire({
             title: 'Are you sure want to delete ' + name + '?',

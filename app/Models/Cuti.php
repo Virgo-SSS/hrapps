@@ -67,4 +67,20 @@ class Cuti extends Model
         return $this->status == 0 ? 'warning' : ($this->status == 1 ? 'success' : 'danger');
     }
 
+    public function getDateCutiAttribute(): string
+    {
+        return $this->from . ' - ' . $this->to;
+    }
+
+    public function getTotalLeaveDaysAttribute(): int
+    {
+        // sub from and to date
+        $from = Carbon::parse($this->from);
+        $to = Carbon::parse($this->to);
+
+        // get total days
+        $totalDays = $to->diffInDays($from) + 1;
+
+        return $totalDays;
+    }
 }

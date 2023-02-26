@@ -2,10 +2,12 @@
 
 namespace Tests\Feature;
 
+use App\Models\Divisi;
 use App\Models\User;
 use App\Models\UserProfile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class UserTest extends TestCase
@@ -14,6 +16,8 @@ class UserTest extends TestCase
     {
         $user = $this->makeUserArray();
         $userProfile = UserProfile::factory()->make()->toArray();
+        $role = Role::create(['name' => 'role for request']);
+        $user['role_id'] = $role->id;
 
         $request = array_merge($user, $userProfile);
 
@@ -345,6 +349,22 @@ class UserTest extends TestCase
         $this->assertEquals('The selected posisi id is invalid.', session()->get('errors')->first('posisi_id'));
     }
 
+    public function test_store_profile_field_posisi_id_column_divisi_id_must_match_with_request_divisi_id(): void
+    {
+        $user = $this->createUserWithRoles('super admin');
+        $this->actingAs($user);
+
+        $request = $this->prepareRequest();
+
+        $divisi = Divisi::factory()->create();
+        $request['divisi_id'] = $divisi->id;
+
+        $response = $this->post(route('users.store'), $request);
+
+        $response->assertSessionHasErrors('posisi_id');
+        $this->assertEquals('The selected posisi is not available for selected divisi.', session()->get('errors')->first('posisi_id'));
+    }
+
     public function test_store_profile_field_join_date_is_required(): void
     {
         $user = $this->createUserWithRoles('super admin');
@@ -427,6 +447,48 @@ class UserTest extends TestCase
 
         $response->assertSessionHasErrors('salary');
         $this->assertEquals('The salary must be a number.', session()->get('errors')->first('salary'));
+    }
+
+    public function test_store_user_field_role_id_is_required(): void
+    {
+        $user = $this->createUserWithRoles('super admin');
+        $this->actingAs($user);
+
+        $request = $this->prepareRequest();
+        $request['role_id'] = null;
+
+        $response = $this->post(route('users.store'), $request);
+
+        $response->assertSessionHasErrors('role_id');
+        $this->assertEquals('The role id field is required.', session()->get('errors')->first('role_id'));
+    }
+
+    public function test_store_user_field_role_id_is_integer(): void
+    {
+        $user = $this->createUserWithRoles('super admin');
+        $this->actingAs($user);
+
+        $request = $this->prepareRequest();
+        $request['role_id'] = 'asdadasd';
+
+        $response = $this->post(route('users.store'), $request);
+
+        $response->assertSessionHasErrors('role_id');
+        $this->assertEquals('The role id must be an integer.', session()->get('errors')->first('role_id'));
+    }
+
+    public function test_store_user_field_role_id_must_be_exists_at_table(): void
+    {
+        $user = $this->createUserWithRoles('super admin');
+        $this->actingAs($user);
+
+        $request = $this->prepareRequest();
+        $request['role_id'] = 999999;
+
+        $response = $this->post(route('users.store'), $request);
+
+        $response->assertSessionHasErrors('role_id');
+        $this->assertEquals('The selected role id is invalid.', session()->get('errors')->first('role_id'));
     }
 
     public function test_super_admin_can_store_user_with_profile(): void
@@ -824,6 +886,21 @@ class UserTest extends TestCase
 
         $response->assertSessionHasErrors('posisi_id');
         $this->assertEquals('The selected posisi id is invalid.', session()->get('errors')->first('posisi_id'));
+    }
+
+    public function test_update_user_field_posisi_id_column_divisi_id_must_match_with_request_divisi_id(): void
+    {
+        $user = $this->createUserWithRoles('super admin');
+        $this->actingAs($user);
+
+        $request = $this->prepareRequest();
+        $divisi = Divisi::factory()->create();
+        $request['divisi_id'] = $divisi->id;
+
+        $response = $this->put(route('users.update', $user->id), $request);
+
+        $response->assertSessionHasErrors('posisi_id');
+        $this->assertEquals('The selected posisi is not available for selected divisi.', session()->get('errors')->first('posisi_id'));
     }
 
     public function test_update_user_field_join_date_is_required(): void

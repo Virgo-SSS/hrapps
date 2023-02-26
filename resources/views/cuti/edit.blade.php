@@ -2,7 +2,7 @@
 
 @section('title')
     <li><a href="{{ route('cuti.index') }}">Cuti</a></li>
-    <li><span>Create</span></li>
+    <li><span>Edit</span></li>
 @endsection
 
 @section('content')
@@ -10,20 +10,21 @@
         <div class="card mt-5">
             <div class="card-body">
                 <h4 class="header-title">Create Request Cuti</h4>
-                <form action="{{ route('cuti.store') }}" method="POST">
+                <form action="{{ route('cuti.update', $cuti->id) }}" method="POST">
                     @csrf
+                    @method('PUT')
                     <div class="form-row">
                         <div class="col-md-6 mb-3">
                             <label for="name">Name</label>
-                            <input type="text" name="name" id="name" class="form-control" placeholder="{{ Auth::user()->name }}" disabled>
+                            <input type="text" name="name" id="name" class="form-control" placeholder="{{ $cuti->user->name }}" disabled>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="date">Date</label>
-                            <input type="text" name="date" id="date" value="{{ old('date') }}" class="form-control" required autocomplete="off" placeholder="Select Date Range">
+                            <input type="text" name="date" id="date" value="{{ $cuti->date_cuti }}" class="form-control" required autocomplete="off" placeholder="Select Date Range">
                             @error('date')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
                             @enderror
                         </div>
                     </div>
@@ -35,13 +36,13 @@
                                     <select name="head_of_division" id="head_of_division" class="demo-default" required placeholder="Select a person...">
                                         <option value="">Select a Head Of Division...</option>
                                         @foreach($users as $user)
-                                            <option value="{{ $user->id }}" @selected(old('head_of_division') == $user->id)>{{ $user->name }}</option>
+                                            <option value="{{ $user->id }}" @selected($user->id == $cuti->cutiRequest->head_of_division)>{{ $user->name }}</option>
                                         @endforeach
                                     </select>
                                     @error('head_of_division')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
                                     @enderror
                                 </div>
                                 <div class="col-md-6 mb-3">
@@ -49,13 +50,13 @@
                                     <select name="head_of_department" id="head_of_department" required class="demo-default" placeholder="Select a person...">
                                         <option value="">Select a Head Of Department...</option>
                                         @foreach($users as $user)
-                                            <option value="{{ $user->id }}" @selected(old('head_of_department') == $user->id)>{{ $user->name }}</option>
+                                            <option value="{{ $user->id }}" @selected($user->id == $cuti->cutiRequest->head_of_department)>{{ $user->name }}</option>
                                         @endforeach
                                     </select>
                                     @error('head_of_department')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
                                     @enderror
                                 </div>
 
@@ -65,17 +66,17 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="leave_days">Leave Days</label>
-                                    <input type="text" id="leave_days" disabled class="form-control">
+                                    <input type="text" id="leave_days" disabled class="form-control" value="{{ $cuti->total_leave_days }}">
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="reason">Reason</label>
-                            <textarea name="reason" name="reason" id="reason" class="form-control" rows="5" required>{{ old('reason') }}</textarea>
+                            <textarea name="reason" name="reason" id="reason" class="form-control" rows="5" required>{{ $cuti->reason }}</textarea>
                             @error('reason')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
                             @enderror
                         </div>
                     </div>

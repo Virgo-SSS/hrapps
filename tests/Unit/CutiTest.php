@@ -117,4 +117,26 @@ class CutiTest extends TestCase
         $this->assertTrue($cuti->contains($pendingCuti));
         $this->assertFalse($cuti->contains($notPendingCuti));
     }
+
+    public function test_cuti_date_return_correct_date(): void
+    {
+        $cuti = new Cuti([
+            'from' => '2021-01-01',
+            'to' => '2021-01-03',
+        ]);
+
+        $this->assertEquals('2021-01-01 - 2021-01-03', $cuti->date_cuti);
+        $this->assertTrue(is_string($cuti->date_cuti));
+    }
+
+    public function test_total_leave_days_return_correct_date(): void
+    {
+        $cuti = new Cuti([
+            'from' => '2021-01-01',
+            'to' => '2021-01-03',
+        ]);
+
+        $this->assertEquals(3, $cuti->total_leave_days);
+        $this->assertTrue(is_int($cuti->total_leave_days));
+    }
 }

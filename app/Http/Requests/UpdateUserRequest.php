@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Rules\CheckBank;
+use App\Rules\CheckPosisi;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -35,11 +36,13 @@ class UpdateUserRequest extends FormRequest
             'bank_account_number'   => 'required|numeric',
 
             'divisi_id'             => 'required|integer|exists:divisi,id',
-            'posisi_id'             => 'required|integer|exists:posisi,id',
+            'posisi_id'             => ['required','integer','exists:posisi,id', new CheckPosisi()],
             'join_date'             => 'required|date',
 
             'cuti'                  => 'required|integer',
             'salary'                => 'required|numeric',
+
+            'role_id'               => 'required|integer|exists:roles,id',
         ];
     }
 

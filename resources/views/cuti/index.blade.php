@@ -62,7 +62,7 @@
                                         <td>
                                             <ul class="d-flex">
                                                 <li>
-                                                    <a href="#" class="text-secondary" style="font-size: 20px"><i class="fa fa-edit"></i></a>
+                                                    <a href="{{ route('cuti.edit', $cuti->id) }}" class="text-secondary" style="font-size: 20px"><i class="fa fa-edit"></i></a>
                                                 </li>
                                                 <span class="mr-2 ml-2">|</span>
                                                 <li>

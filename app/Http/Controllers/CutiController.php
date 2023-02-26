@@ -60,9 +60,15 @@ class CutiController extends Controller
         return view('cuti.detail', compact('cuti'));
     }
 
-    public function edit(Cuti $cuti)
+    public function edit(Cuti $cuti): View|RedirectResponse
     {
-        //
+        abort_if(!Gate::allows('edit cuti'), 403);
+//        $cuti->cutiRequest->status_hod != config('cuti.status.pending') || $cuti->cutiRequest->status_hodp != config('cuti.status.pending');
+//        return redirect()->route('cuti.index')->with('swal-error', 'Cuti cannot be edited, because it has been approved or rejected by HOD or HODP, contact admin for further information.');
+
+        $users = User::all();
+        $cuti->load('cutiRequest');
+        return view('cuti.edit', compact('cuti', 'users'));
     }
 
     public function update(UpdateCutiRequest $request, Cuti $cuti)

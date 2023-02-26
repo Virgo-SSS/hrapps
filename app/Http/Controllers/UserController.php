@@ -11,6 +11,7 @@ use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -36,7 +37,8 @@ class UserController extends Controller
         abort_if(!Gate::allows('create user'), 403);
 
         $divisis = $this->divisiRepository->getDivisiWithoutEagerLoading();
-        return view('users.create', compact('divisis' ));
+        $roles = Role::all();
+        return view('users.create', compact('divisis', 'roles'));
     }
 
     public function store(StoreUserRequest $request): RedirectResponse
@@ -52,7 +54,8 @@ class UserController extends Controller
         abort_if(!Gate::allows('edit user'), 403);
 
         $divisis = $this->divisiRepository->getDivisiWithoutEagerLoading();
-        return view('users.edit', compact('user', 'divisis'));
+        $roles = Role::all();
+        return view('users.edit', compact('user', 'divisis', 'roles'));
     }
 
     public function update(UpdateUserRequest $request, User $user): RedirectResponse
@@ -66,7 +69,7 @@ class UserController extends Controller
     public function destroy(User $user): RedirectResponse
     {
         abort_if(!Gate::allows('delete user'), 403);
-        
+
         $this->repository->delete($user);
         return redirect()->route('users.index')->with('toastr-success', 'User Successfully Deleted');
     }
