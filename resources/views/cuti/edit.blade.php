@@ -9,7 +9,7 @@
     <div class="col-md-12">
         <div class="card mt-5">
             <div class="card-body">
-                <h4 class="header-title">Create Request Cuti</h4>
+                <h4 class="header-title">Edit Request Cuti</h4>
                 <form action="{{ route('cuti.update', $cuti->id) }}" method="POST">
                     @csrf
                     @method('PUT')

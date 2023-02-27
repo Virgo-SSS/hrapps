@@ -15,7 +15,7 @@
                     <div class="card-body">
                         <h4 class="header-title">Roles</h4>
                         <input type="text" id="name" name="name" value="{{ $role->name }}" class="form-control" placeholder="New Roles" required>
-                        <button type="submit" class="btn btn-primary mt-4 pr-4 pl-4">Create</button>
+                        <button type="submit" class="btn btn-primary mt-4 pr-4 pl-4">Update</button>
                     </div>
                 </div>
             </div>

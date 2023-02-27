@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateUserRequest;
 use App\Interfaces\UserProfileRepositoryInterface;
 use App\Interfaces\UserRepositoryInterface;
 use App\Models\User;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -16,18 +17,12 @@ class UserRepository implements UserRepositoryInterface
 {
     public function getUser(): Collection
     {
-        if(Cache::has('users')){
-            return Cache::get('users');
-        }
-
         $users = DB::table('users')
             ->join('user_profile', 'users.id', '=', 'user_profile.user_id')
             ->join('divisi', 'user_profile.divisi_id', '=', 'divisi.id')
             ->join('posisi', 'user_profile.posisi_id', '=', 'posisi.id')
             ->select('users.id','users.uuid','users.name','users.email', 'user_profile.cuti','user_profile.join_date', 'divisi.name as divisi_name', 'posisi.name as posisi_name')
             ->get();
-
-        Cache::put('users', $users, 3600);
 
         return $users;
     }

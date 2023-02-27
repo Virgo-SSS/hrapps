@@ -3,10 +3,7 @@
     <div class="sidebar-header">
         <div class="logo">
             <a href="{{ route('home') }}" style="text-decoration: none">
-                <span style="font-size:20px;color:white; font-family: 'Lucida Bright'; font-weight: bold">
-                    PT. Adi Bintan Permata
-                </span>
-                {{--  <img src="{{ asset('assets/images/icon/logo.png') }}" alt="logo">--}}
+                  <img src="{{ asset('assets/images/icon/logo.png') }}" alt="logo">
             </a>
         </div>
     </div>

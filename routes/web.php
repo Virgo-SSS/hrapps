@@ -32,6 +32,7 @@ Route::middleware('auth')->group(function(){
         Route::get('/', 'index')->name('home');
     });
 
+    Route::get('users/data/json', [UserController::class, 'getUserDataInJson'])->name('users.data.json');
     Route::resource('users', UserController::class)->except(['show']);
     Route::resource('divisi', DivisiController::class)->except(['show','create']);
 

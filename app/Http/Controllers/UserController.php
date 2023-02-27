@@ -8,8 +8,11 @@ use App\Interfaces\UserRepositoryInterface;
 use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Js;
 use Illuminate\View\View;
 use Spatie\Permission\Models\Role;
 
@@ -28,8 +31,35 @@ class UserController extends Controller
     {
         abort_if(!Gate::allows('view user'), 403);
 
+        return view('users.index');
+    }
+
+    public function getUserDataInJson(): JsonResponse
+    {
+        abort_if(!Gate::allows('view user'), 403);
+
         $users = $this->repository->getUser();
-        return view('users.index', compact('users'));
+        return datatables()->of($users)
+            ->addIndexColumn()
+            ->addColumn('action', function ($user) {
+                $editUrl = route('users.edit', $user->id);
+                $deleteUrl = route('users.destroy', $user->id);
+                $csrfToken = csrf_token();
+                return <<<HTML
+                        <a href="{$editUrl}" title="Edit user">
+                            <i class="fa fa-pencil"></i>
+                        </a> |
+                        <a href="#" onclick="event.preventDefault();deleteItem('#deleteUser-{$user->id}', '{$user->name}')" title="Delete user">
+                            <i class="fa fa-trash" style="color: red;"></i>
+                        </a>
+                        <form action="{$deleteUrl} " method="POST" id="deleteUser-{$user->id}" style="display: inline-block;">
+                            <input type="hidden" name="_token" value="{$csrfToken}">
+                            <input type="hidden" name="_method" value="DELETE">
+                        </form>
+                    HTML;
+            })
+            ->rawColumns(['action'])
+            ->make(true);
     }
 
     public function create(): View

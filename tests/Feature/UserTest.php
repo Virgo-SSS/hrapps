@@ -1121,5 +1121,22 @@ class UserTest extends TestCase
 
         $this->assertDatabaseMissing('user_profile', [
             'user_id' => $user->id,
-        ]); }
+        ]);
+    }
+
+    public function test_get_user_data_with_datatable(): void
+    {
+        $user = $this->createUserWithRoles('super admin');
+        $this->actingAs($user);
+
+        $response = $this->get(route('users.data.json'));
+
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'draw',
+            'recordsTotal',
+            'recordsFiltered',
+            'data',
+        ]);
+    }
 }
