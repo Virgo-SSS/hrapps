@@ -35,9 +35,18 @@ class CutiRepository implements CutiRepositoryInterface
         });
     }
 
-    public function update(array $request, $id): void
+    public function update(array $request, Cuti $cuti): void
     {
-        Cuti::find($id)->update($request);
+        DB::transaction(function () use ($request, $cuti) {
+            $date = explode(' ', $request['date']);
+            $cuti->update([
+                'from' => $date[0],
+                'to' => $date[2],
+                'reason' => $request['reason'],
+            ]);
+
+            app(CutiRequestRepositoryInterface::class)->update($cuti, $request);
+        });
     }
 
     public function delete(int $id): void

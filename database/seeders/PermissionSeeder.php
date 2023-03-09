@@ -21,7 +21,7 @@ class PermissionSeeder extends Seeder
             'view user',          'create user',           'edit user',         'delete user',
             'view divisi',        'create divisi',         'edit divisi',       'delete divisi',
             'view posisi',        'create posisi',         'edit posisi',       'delete posisi',
-            'view cuti',          'create cuti',           'edit cuti',         'delete cuti',
+            'view cuti',          'create cuti',           'edit cuti',         'delete cuti',        'view cuti request',
         ];
 
         foreach ($permission as $key => $value) {

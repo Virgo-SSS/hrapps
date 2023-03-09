@@ -3,6 +3,7 @@
 namespace App\Interfaces;
 
 use App\Http\Requests\StoreCutiRequest;
+use App\Models\Cuti;
 use Illuminate\Support\Collection;
 
 interface CutiRepositoryInterface
@@ -13,7 +14,7 @@ interface CutiRepositoryInterface
 
     public function store(array $request): void;
 
-    public function update(array $request, $id): void;
+    public function update(array $request, Cuti $cuti): void;
 
     public function delete(int $id): void;
 }

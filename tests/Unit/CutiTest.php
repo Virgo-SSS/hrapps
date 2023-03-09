@@ -2,8 +2,13 @@
 
 namespace Tests\Unit;
 
+use App\Http\Middleware\cutiEdit;
+use App\Http\Middleware\roleEdit;
 use App\Models\Cuti;
 use App\Models\CutiRequest;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class CutiTest extends TestCase
@@ -138,5 +143,56 @@ class CutiTest extends TestCase
 
         $this->assertEquals(3, $cuti->total_leave_days);
         $this->assertTrue(is_int($cuti->total_leave_days));
+    }
+
+    public function test_middleware_cutiEdit_if_one_of_status_hod_or_hodp_already_accepted_user_cant_edit_cuti(): void
+    {
+        $user = User::factory()->create(['name' => 'not super admin']);
+
+        $cuti = Cuti::factory()->create(['user_id' => $user->id]);
+        CutiRequest::factory()->create([
+            'cuti_id' => $cuti->id,
+            'status_hod' => 1,
+        ]);
+
+        $request = \Mockery::mock(Request::class);
+        $request->shouldReceive('route')->with('cuti')->andReturn($cuti);
+
+        $closure = function ($request) {
+            return response('OK');
+        };
+
+        $middleware = new cutiEdit();
+        $response = $middleware->handle($request, $closure);
+
+        $this->assertEquals(302, $response->status());
+        $this->assertEquals('Cuti cannot be edited It has been approved or rejected. Please contact the administrator.', session('swal-error'));
+    }
+
+    public function test_middleware_cutiEdit_user_can_edit_cuti_if_status_hod_and_hodp_still_pending(): void
+    {
+        $user = User::factory()->create(['name' => 'not super admin']);
+
+        $cuti = Cuti::factory()->create(['user_id' => $user->id]);
+        CutiRequest::factory()->create([
+            'cuti_id' => $cuti->id,
+            'status_hod' => 0,
+            'status_hodp' => 0,
+        ]);
+
+        $request = \Mockery::mock(Request::class);
+        $request->shouldReceive('route')->with('cuti')->andReturn($cuti);
+
+        $closure = function ($request) {
+            return response('OK');
+        };
+
+        $middleware = new cutiEdit();
+
+
+        $response = $middleware->handle($request, $closure);
+
+        $this->assertEquals(200, $response->status());
+        $this->assertEquals('OK', $response->getContent());
     }
 }

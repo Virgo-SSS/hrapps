@@ -19,6 +19,7 @@ class CutiController extends Controller
     public function __construct(CutiRepositoryInterface $repository)
     {
         $this->repository = $repository;
+        $this->middleware('cutiEdit')->only('edit', 'update');
     }
 
     public function index(): View
@@ -39,7 +40,7 @@ class CutiController extends Controller
 
     public function request(): view
     {
-        abort_if(!Gate::allows('view cuti'), 403);
+        abort_if(!Gate::allows('view cuti request'), 403);
 
         $pendingCutis = $this->repository->getPendingCuti();
         return view('cuti.request', compact('pendingCutis'));
@@ -60,20 +61,22 @@ class CutiController extends Controller
         return view('cuti.detail', compact('cuti'));
     }
 
-    public function edit(Cuti $cuti): View|RedirectResponse
+    public function edit(Cuti $cuti): View
     {
         abort_if(!Gate::allows('edit cuti'), 403);
-//        $cuti->cutiRequest->status_hod != config('cuti.status.pending') || $cuti->cutiRequest->status_hodp != config('cuti.status.pending');
-//        return redirect()->route('cuti.index')->with('swal-error', 'Cuti cannot be edited, because it has been approved or rejected by HOD or HODP, contact admin for further information.');
-
         $users = User::all();
         $cuti->load('cutiRequest');
+
         return view('cuti.edit', compact('cuti', 'users'));
     }
 
-    public function update(UpdateCutiRequest $request, Cuti $cuti)
+    public function update(UpdateCutiRequest $request, Cuti $cuti): RedirectResponse
     {
-        //
+        abort_if(!Gate::allows('edit cuti'), 403);
+
+        $this->repository->update($request->all(), $cuti);
+
+        return redirect()->route('cuti.edit', $cuti->id)->with('toastr-success', 'Cuti updated successfully.');
     }
 
     public function destroy(Cuti $cuti): RedirectResponse

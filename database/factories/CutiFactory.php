@@ -19,8 +19,8 @@ class CutiFactory extends Factory
     {
         return [
             'user_id' => $this->getUserId(),
-            'from' => $this->faker->date(),
-            'to' => $this->faker->date(),
+            'from' => $this->faker->dateTimeBetween('now', '+1 year')->format('Y-m-d'),
+            'to' => $this->faker->dateTimeBetween('+1 year', '+2 year')->format('Y-m-d'),
             'reason' => $this->faker->text(),
         ];
     }

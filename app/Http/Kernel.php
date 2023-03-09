@@ -67,5 +67,6 @@ class Kernel extends HttpKernel
         'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
         'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
         'roleEdit' => \App\Http\Middleware\roleEdit::class,
+        'cutiEdit' => \App\Http\Middleware\cutiEdit::class,
     ];
 }

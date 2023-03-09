@@ -16,4 +16,12 @@ class CutiRequestRepository implements CutiRequestRepositoryInterface
             'head_of_department' => $data['head_of_department'],
         ]);
     }
+
+    public function update(Cuti $cuti, array $data): void
+    {
+        $cuti->cutiRequest()->update([
+            'head_of_division' => $data['head_of_division'],
+            'head_of_department' => $data['head_of_department'],
+        ]);
+    }
 }

@@ -38,6 +38,9 @@ abstract class TestCase extends BaseTestCase
     public function createUserWithRoles(string $roles): User
     {
         $user = User::factory()->create();
+        UserProfile::factory()->create([
+            'user_id' => $user->id,
+        ]);
 
         Role::create(['name' => $roles]);
         $user->assignRole($roles);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\CheckDateCuti;
 use App\Rules\CheckDateFormat;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -26,7 +27,7 @@ class UpdateCutiRequest extends FormRequest
     public function rules()
     {
         return [
-            'date' => ['required', new  CheckDateFormat('Y-m-d','daterange')],
+            'date' => ['required', new  CheckDateFormat('Y-m-d','daterange'), new CheckDateCuti()],
             'reason' => 'required|string',
 
             'head_of_division' => 'required|integer|exists:users,id',
