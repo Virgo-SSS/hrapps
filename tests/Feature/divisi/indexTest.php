@@ -16,7 +16,7 @@ class indexTest extends TestCase
         $response->assertRedirect(route('login'));
     }
 
-    public function test_user_cant_access_if_user_not_authorized(): void
+    public function test_user_cant_access_divisi_pageif_user_not_authorized(): void
     {
         $user = $this->createUserWithRoles('invalidRoles');
         $this->assignPermission('invalidPermission', $user);
