@@ -22,21 +22,15 @@ class IndexTest extends baseCuti
         $response->assertStatus(403);
     }
 
-    public function test_super_admin_can_access_cuti_page_if_authenticated(): void
+    /**
+     * @dataProvider userIndex
+     */
+    public function test_user_can_access_cuti_page_if_authenticated(string $role, ?string $permission = null): void
     {
-        $user = $this->createUserWithRoles('super admin');
-
-        $response = $this->actingAs($user)->get(route('cuti.index'));
-
-        $response->assertStatus(200);
-        $response->assertViewIs('cuti.index');
-        $response->assertViewHas('cutis');
-    }
-
-    public function test_user_can_access_cuti_page_if_authorized(): void
-    {
-        $user = $this->createUserWithRoles('employee');
-        $this->assignPermission('view cuti', $user);
+        $user = $this->createUserWithRoles($role);
+        if($permission) {
+            $this->assignPermission($permission, $user);
+        }
 
         $response = $this->actingAs($user)->get(route('cuti.index'));
 

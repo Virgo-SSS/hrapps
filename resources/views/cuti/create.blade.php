@@ -10,7 +10,7 @@
         <div class="card mt-5">
             <div class="card-body">
                 <h4 class="header-title">Create Request Cuti</h4>
-                <form action="{{ route('cuti.store') }}" method="POST">
+                <form action="{{ route('cuti.store') }}" method="POST" id="formCuti">
                     @csrf
                     <div class="form-row">
                         <div class="col-md-6 mb-3">
@@ -112,7 +112,7 @@
                 $(this).val('');
             });
 
-            $('select').selectize({
+            $('#formCuti select').selectize({
                 sortField: {
                     field: 'text',
                     direction: 'asc'

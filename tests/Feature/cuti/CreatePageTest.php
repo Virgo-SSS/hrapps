@@ -25,9 +25,15 @@ class CreatePageTest extends baseCuti
         $response->assertStatus(403);
     }
 
-    public function test_user_can_redirect_to_create_cuti_page_if_authenticated(): void
+    /**
+     * @dataProvider userCreate
+     */
+    public function test_user_can_redirect_to_create_cuti_page_if_authenticated(string $role, ?string $permission = null): void
     {
-        $user = $this->createUserWithRoles('super admin');
+        $user = $this->createUserWithRoles($role);
+        if($permission) {
+            $this->assignPermission($permission, $user);
+        }
         UserProfile::factory()->create([
             'user_id' => $user->id,
         ]);
@@ -37,7 +43,4 @@ class CreatePageTest extends baseCuti
         $response->assertStatus(200);
         $response->assertViewIs('cuti.create');
     }
-
-
-
 }

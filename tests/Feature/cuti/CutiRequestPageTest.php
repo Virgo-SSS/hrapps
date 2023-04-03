@@ -2,9 +2,12 @@
 
 namespace Tests\Feature\cuti;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Tests\TestCase;
+use App\Interfaces\CutiRepositoryInterface;
+use App\Models\Cuti;
+use App\Models\CutiRequest;
+use App\Models\User;
+use App\Repository\CutiRepository;
+use Tests\Feature\cuti\baseCuti;
 
 class CutiRequestPageTest extends baseCuti
 {
@@ -26,9 +29,15 @@ class CutiRequestPageTest extends baseCuti
         $response->assertStatus(403);
     }
 
-    public function test_super_admin_can_access_request_cuti_page_if_autheticated(): void
+    /**
+     * @dataProvider userViewCutiReqeust
+     */
+    public function test_super_admin_can_access_request_cuti_page_if_autheticated(string $role, ?string $permission = null): void
     {
-        $user = $this->createUserWithRoles('super admin');
+        $user = $this->createUserWithRoles($role);
+        if($permission) {
+            $this->assignPermission($permission, $user);
+        }
 
         $response = $this->actingAs($user)->get(route('cuti.request'));
 
@@ -36,14 +45,39 @@ class CutiRequestPageTest extends baseCuti
         $response->assertViewIs('cuti.request');
     }
 
-    public function test_user_can_access_request_cuti_page_if_authorized(): void
+    /**
+     * @dataProvider userViewCutiReqeust
+     */
+    public function test_head_get_the_right_leave_pending_data(string $loginAs, int $expected1, int $expected2): void
     {
-        $user = $this->createUserWithRoles('employee');
-        $this->assignPermission('view cuti request', $user);
+        $hod = $this->createUserWithRoles('head of division');
+        $hodp = $this->createUserWithRoles('head of apartement');
+        $this->actingAs(${$loginAs});
+        $cuti =  Cuti::factory()->create();
+        $cuti->cutiRequest()->create([
+            'head_of_division' => $hod->id,
+            'head_of_department' => $hodp->id,
+            'status_hod' => config('cuti.status.pending'),
+            'status_hodp' => config('cuti.status.pending'),
+        ]);
+        $repository = $this->app->make(CutiRepositoryInterface::class);
+        $pending = $repository->getPendingCuti();
 
-        $response = $this->actingAs($user)->get(route('cuti.request'));
+        $this->assertEquals($expected1, $pending->count());
 
-        $response->assertStatus(200);
-        $response->assertViewIs('cuti.request');
+        CutiRequest::where('cuti_id', $cuti->id)->update([
+            'status_hod' => config('cuti.status.approved'),
+        ]);
+
+        $pending = $repository->getPendingCuti();
+        $this->assertEquals($expected2, $pending->count());
+    }
+
+    protected function userViewCutiReqeust(): array
+    {
+        return [
+            'head of division' => ['hod', 1,0],
+            'head of department' => ['hodp',0,1],
+        ];
     }
 }

@@ -8,7 +8,7 @@ use Tests\TestCase;
 
 abstract class baseCuti extends TestCase
 {
-    public function prepareRequest(): array
+    protected function prepareRequest(): array
     {
         $request = Cuti::factory()->make()->toArray();
         $request['date'] = $request['from'] . ' - ' . $request['to'];
@@ -19,5 +19,45 @@ abstract class baseCuti extends TestCase
         unset($request['from']);
         unset($request['to']);
         return $request;
+    }
+
+    protected function userEdit(): array
+    {
+        return [
+            'super admin' => ['super admin'],
+            'employee' => ['employee', 'edit cuti'],
+        ];
+    }
+
+    protected function userCreate(): array
+    {
+        return [
+            'super admin' => ['super admin'],
+            'employee' => ['employee', 'create cuti'],
+        ];
+    }
+
+    protected function userDelete(): array
+    {
+        return [
+            'super admin' => ['super admin'],
+            'employee' => ['employee', 'delete cuti'],
+        ];
+    }
+
+    protected function userIndex(): array
+    {
+        return [
+            'super admin' => ['super admin'],
+            'employee' => ['employee', 'view cuti'],
+        ];
+    }
+
+    protected function userViewCutiReqeust(): array
+    {
+        return [
+            'super admin' => ['super admin'],
+            'employee' => ['employee', 'view cuti request'],
+        ];
     }
 }

@@ -16,5 +16,5 @@ interface CutiRepositoryInterface
 
     public function update(array $request, Cuti $cuti): void;
 
-    public function delete(int $id): void;
+    public function delete(Cuti $cuti): void;
 }

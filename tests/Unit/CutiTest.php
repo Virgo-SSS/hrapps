@@ -123,6 +123,22 @@ class CutiTest extends TestCase
         $this->assertFalse($cuti->contains($notPendingCuti));
     }
 
+    public function test_Approved_Scope(): void
+    {
+        $approvedCuti = Cuti::factory()->create([
+            'status' => 1,
+        ]);
+        $notApprovedCuti = Cuti::factory()->create([
+            'status' => 0,
+        ]);
+
+        $cuti = Cuti::Approved()->get();
+
+        $this->assertCount(1,  $cuti);
+        $this->assertTrue($cuti->contains($approvedCuti));
+        $this->assertFalse($cuti->contains($notApprovedCuti));
+    }
+
     public function test_cuti_date_return_correct_date(): void
     {
         $cuti = new Cuti([

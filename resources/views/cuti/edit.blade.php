@@ -10,7 +10,7 @@
         <div class="card mt-5">
             <div class="card-body">
                 <h4 class="header-title">Edit Request Cuti</h4>
-                <form action="{{ route('cuti.update', $cuti->id) }}" method="POST">
+                <form action="{{ route('cuti.update', $cuti->id) }}" method="POST" id="update-cuti">
                     @csrf
                     @method('PUT')
                     <div class="form-row">
@@ -20,12 +20,7 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="date">Date</label>
-                            <input type="text" name="date" id="date" value="{{ $cuti->date_cuti }}" class="form-control" required autocomplete="off" placeholder="Select Date Range">
-                            @error('date')
-                            <div class="invalid-feedback">
-                                {{ $message }}
-                            </div>
-                            @enderror
+                            <input type="text" id="date" value="{{ $cuti->date_cuti }}" class="form-control"  readonly disabled>
                         </div>
                     </div>
                     <div class="form-row">
@@ -113,7 +108,7 @@
                 $(this).val('');
             });
 
-            $('select').selectize({
+            $('#update-cuti select').selectize({
                 sortField: {
                     field: 'text',
                     direction: 'asc'

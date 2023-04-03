@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\CutiDateRequestedException;
+use App\Exceptions\CutiRequestStillProcessingException;
 use App\Interfaces\CutiRepositoryInterface;
 use App\Models\Cuti;
 use App\Http\Requests\StoreCutiRequest;
 use App\Http\Requests\UpdateCutiRequest;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
@@ -48,10 +49,16 @@ class CutiController extends Controller
 
     public function store(StoreCutiRequest $request): RedirectResponse
     {
-        abort_if(!Gate::allows('create cuti'), 403);
+        try {
+            abort_if(!Gate::allows('create cuti'), 403);
 
-        $this->repository->store($request->all());
-        return redirect()->route('cuti.index')->with('toastr-success', 'Cuti created successfully.');
+            $this->repository->store($request->all());
+            return redirect()->route('cuti.index')->with('toastr-success', 'Cuti created successfully.');
+        } catch (CutiRequestStillProcessingException $e) {
+            return redirect()->back()->with('swal-warning', $e->getMessage());
+        } catch (CutiDateRequestedException $e) {
+            return redirect()->back()->with('swal-error', $e->getMessage());
+        }
     }
 
     public function show(Cuti $cuti): View
@@ -74,7 +81,7 @@ class CutiController extends Controller
     {
         abort_if(!Gate::allows('edit cuti'), 403);
 
-        $this->repository->update($request->all(), $cuti);
+        $this->repository->update($request->validated(), $cuti);
 
         return redirect()->route('cuti.edit', $cuti->id)->with('toastr-success', 'Cuti updated successfully.');
     }
@@ -83,7 +90,7 @@ class CutiController extends Controller
     {
         abort_if(!Gate::allows('delete cuti'), 403);
 
-        $this->repository->delete($cuti->id);
+        $this->repository->delete($cuti);
         return redirect()->route('cuti.index')->with('toastr-success', 'Cuti deleted successfully.');
     }
 }

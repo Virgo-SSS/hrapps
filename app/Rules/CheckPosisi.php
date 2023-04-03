@@ -3,6 +3,7 @@
 namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class CheckPosisi implements Rule
@@ -28,15 +29,13 @@ class CheckPosisi implements Rule
     {
         $divisi_id = request()->input('divisi_id');
 
-        if(!is_null($divisi_id)) {
-            $posisi = DB::table('posisi')->where('id', $value)->first();
+        $posisi = DB::table('posisi')->where('id', $value)->first();
 
-            if($posisi && $posisi->divisi_id != $divisi_id){
-                return false;
-            }
+        if($posisi && $posisi->divisi_id == $divisi_id){
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     /**

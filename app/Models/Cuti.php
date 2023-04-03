@@ -45,6 +45,11 @@ class Cuti extends Model
         return $query->where('status', config('cuti.status.pending'));
     }
 
+    public function scopeApproved(): Builder
+    {
+        return $this->where('status', config('cuti.status.approved'));
+    }
+
 
     /*
      *  Accessors And Mutators

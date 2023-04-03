@@ -11,7 +11,6 @@ use Tests\TestCase;
 class StoreCutiTest extends baseCuti
 {
     /**
-     * @test
      * @dataProvider DataFormCreateCuti
      */
     public function validation_form_request(string $field, string|int $value,string $errorMessage): void
@@ -69,9 +68,16 @@ class StoreCutiTest extends baseCuti
         ];
     }
 
-    public function test_super_admin_store_cuti_success(): void
+
+    /**
+     * @dataProvider userCreate
+     */
+    public function test_user_store_cuti_success(string $role, ?string $permission = null): void
     {
-        $user = $this->createUserWithRoles('super admin');
+        $user = $this->createUserWithRoles($role);
+        if($permission) {
+            $this->assignPermission($permission, $user);
+        }
 
         $request = $this->prepareRequest();
 
@@ -100,76 +106,4 @@ class StoreCutiTest extends baseCuti
             'note_hodp' => null,
         ]);
     }
-
-    public function test_user_store_cuti_success_if_authorized(): void
-    {
-        $user = $this->createUserWithRoles('employee');
-        $this->assignPermission('create cuti', $user);
-
-        $request = $this->prepareRequest();
-
-        $response = $this->actingAs($user)->post(route('cuti.store'), $request);
-
-        $response->assertStatus(302);
-        $response->assertRedirect(route('cuti.index'));
-        $response->assertSessionHas('toastr-success', 'Cuti created successfully.');
-
-        $date = explode(' ', $request['date']);
-        $this->assertDatabaseHas('cuti', [
-            'user_id' => $user->id,
-            'from' => $date[0],
-            'to' => $date[2],
-            'reason' => $request['reason'],
-            'status' => config('cuti.status.pending'),
-        ]);
-
-        $this->assertDatabaseHas('cuti_request', [
-            'cuti_id' => Cuti::where('user_id', $user->id)->first()->id,
-            'head_of_division' => $request['head_of_division'],
-            'status_hod' => config('cuti.status.pending'),
-            'note_hod' => null,
-            'head_of_department' => $request['head_of_department'],
-            'status_hodp' => config('cuti.status.pending'),
-            'note_hodp' => null,
-        ]);
-    }
-
-//    public function test_store_cuti_field_date_is_required(): void
-//    {
-//        $user = $this->createUserWithRoles('super admin');
-//
-//        $request = $this->prepareRequest();
-//        $request['date'] = '';
-//
-//        $response = $this->actingAs($user)->post(route('cuti.store'), $request);
-//
-//        $response->assertSessionHasErrors('date');
-//        $this->assertEquals('The date field is required.', session()->get('errors')->first('date'));
-//    }
-//
-//    public function test_store_cuti_field_from_must_be_date_range_format(): void
-//    {
-//        $user = $this->createUserWithRoles('super admin');
-//
-//        $request = $this->prepareRequest();
-//        $request['date'] = 'asdasdasdsa';
-//
-//        $response = $this->actingAs($user)->post(route('cuti.store'), $request);
-//
-//        $response->assertSessionHasErrors('date');
-//        $this->assertEquals('The date format is invalid.', session()->get('errors')->first('date'));
-//    }
-//
-//    public function test_store_cuti_field_reason_is_required(): void
-//    {
-//        $user = $this->createUserWithRoles('super admin');
-//
-//        $request = $this->prepareRequest();
-//        $request['reason'] = '';
-//
-//        $response = $this->actingAs($user)->post(route('cuti.store'), $request);
-//
-//        $response->assertSessionHasErrors('reason');
-//        $this->assertEquals('The reason field is required.', session()->get('errors')->first('reason'));
-//    }
 }

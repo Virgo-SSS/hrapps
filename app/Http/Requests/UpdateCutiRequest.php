@@ -27,9 +27,7 @@ class UpdateCutiRequest extends FormRequest
     public function rules()
     {
         return [
-            'date' => ['required', new  CheckDateFormat('Y-m-d','daterange'), new CheckDateCuti()],
             'reason' => 'required|string',
-
             'head_of_division' => 'required|integer|exists:users,id',
             'head_of_department' => 'required|integer|exists:users,id',
         ];

@@ -36,12 +36,34 @@
 <script src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap.min.js"></script>
 
 <script>
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        iconColor: 'white',
+        customClass: {
+            popup: 'colored-toast'
+        },
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    })
+
     @if(Session::has('toastr-success'))
-        toastr.success("{{ Session::get('toastr-success') }}")
+        Toast.fire({
+            icon: 'success',
+            title: '{{ Session::get('toastr-success') }}'
+        })
     @endif
 
     @if(Session::has('toastr-error'))
-        toastr.error("{{ Session::get('toastr-error') }}")
+        Toast.fire({
+            icon: 'error',
+            title: '{{ Session::get('toastr-error') }}'
+        })
     @endif
 
     @if(Session::has('swal-error'))
@@ -49,6 +71,13 @@
             icon: 'error',
             title: 'Oops...',
             text: "{{ Session::get('swal-error') }}",
+        })
+    @endif
+
+    @if(Session::has('swal-warning'))
+        Swal.fire({
+            icon: 'warning',
+            text: "{{ Session::get('swal-warning') }}",
         })
     @endif
 
@@ -62,7 +91,6 @@
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                console.log(form_id);
                 $(form_id).submit();
                 Swal.fire(
                     'Deleted!',

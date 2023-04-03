@@ -52,7 +52,7 @@
                                         <td>
                                             <span class="status-p bg-{{ $cuti->color_status }}">
                                                 <a href="{{ route('cuti.show', $cuti->id) }}" style="text-decoration: none; color: white">
-                                                {{ $cuti->status_in_human }}
+                                                    {{ $cuti->status_in_human }}
                                                 </a>
                                             </span>
                                         </td>
@@ -91,7 +91,13 @@
 @section('scripts')
     <script>
         $('#cuti-table').DataTable({
-            "order": [[ 0, "desc" ]]
+            ordering : false,
+            columnDefs: [
+                {
+                    className: "dt-head-center dt-body-center",
+                    targets: "_all"
+                },
+            ]
         });
     </script>
 @endsection
