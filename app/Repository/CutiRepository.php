@@ -17,7 +17,10 @@ class CutiRepository implements CutiRepositoryInterface
     public function getCuti(): Collection
     {
         return Cuti::with(['user', 'user.profile', 'user.profile.divisi', 'user.profile.posisi', 'cutiRequest'])
-            ->where('user_id', auth()->user()->id)->get();
+            ->when(!auth()->user()->hasRole('super admin'), function ($query) {
+                return $query->where('user_id', auth()->user()->id);
+            })
+            ->get();
     }
 
     public function getPendingCuti(): Collection

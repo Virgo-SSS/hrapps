@@ -34,63 +34,55 @@
                                         <th scope="col">Days</th>
                                         <th scope="col">Sisa Cuti</th>
                                         <th scope="col">Status</th>
-                                        <th scope="col">Edit Status</th>
-                                        <th scope="col">Action</th>
+                                        @can('edit cuti')
+                                        <th scope="col">Edit</th>
+                                        @endcan
+                                        @can('delete cuti')
+                                        <th scope="col">Delete</th>
+                                        @endcan
                                     </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($cutis as $cuti)
-                                    <tr>
-                                        <th scope="row">{{ $loop->iteration }}</th>
-                                        <td>{{ $cuti->user->uuid  }}</td>
-                                        <td>{{ $cuti->user->name }}</td>
-                                        <td>{{ $cuti->user->profile->divisi->name }}</td>
-                                        <td>{{ $cuti->user->profile->posisi->name }}</td>
-                                        <td>{{ $cuti->from }}</td>
-                                        <td>{{ $cuti->to }}</td>
-                                        <td>{{ $cuti->duration }}</td>
-                                        <td>{{ $cuti->user->profile->cuti }}</td>
-                                        <td>
-                                            <span class="status-p bg-{{ $cuti->color_status }}">
-                                                <a href="{{ route('cuti.show', $cuti->id) }}" style="text-decoration: none; color: white">
-                                                    {{ $cuti->status_in_human }}
-                                                </a>
-                                            </span>
-                                        </td>
-                                        <td>
-                                            -
-                                        </td>
-                                        <td>
-                                            @if($cuti->cutiRequest->status_hod == config('cuti.status.pending') && $cuti->cutiRequest->status_hodp == config('cuti.status.pending')
-                                                || auth()->user()->can('edit cuti')
-                                                || auth()->user()->can('delete cuti')
-                                                )
-                                                <ul class="d-flex">
-                                                        @can('edit cuti')
-                                                        <li>
-                                                            <a href="{{ route('cuti.edit', $cuti->id) }}" class="text-secondary" style="font-size: 20px"><i class="fa fa-edit"></i></a>
-                                                        </li>
-                                                        <span class="mr-2 ml-2">|</span>
-                                                        @endcan
-
-                                                        @can('delete cuti')
-                                                        <li>
-                                                            <a href="#" class="text-danger" style="font-size: 20px" onclick="deleteItem('#delete-cuti-{{ $cuti->id }}', 'Cuti {{ $cuti->user->name }}')">
-                                                                <i class="ti-trash"></i>
-                                                            </a>
-                                                        </li>
-                                                        <form action="{{ route('cuti.destroy', $cuti->id) }}" method="POST" id="delete-cuti-{{ $cuti->id }}">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                        </form>
-                                                        @endcan
-                                                </ul>
-                                            @else
-                                                -
-                                            @endif
-                                        </td>
-                                    </tr>
-                                @endforeach
+                                    @foreach($cutis as $cuti)
+                                        <tr>
+                                            <th scope="row">{{ $loop->iteration }}</th>
+                                            <td>{{ $cuti->user->uuid  }}</td>
+                                            <td>{{ $cuti->user->name }}</td>
+                                            <td>{{ $cuti->user->profile->divisi->name }}</td>
+                                            <td>{{ $cuti->user->profile->posisi->name }}</td>
+                                            <td>{{ $cuti->from }}</td>
+                                            <td>{{ $cuti->to }}</td>
+                                            <td>{{ $cuti->duration }}</td>
+                                            <td>{{ $cuti->user->profile->cuti }}</td>
+                                            <td>
+                                                <span class="status-p bg-{{ $cuti->color_status }}">
+                                                    <a href="{{ route('cuti.show', $cuti->id) }}" style="text-decoration: none; color: white">
+                                                        {{ $cuti->status_in_human }}
+                                                    </a>
+                                                </span>
+                                            </td>
+                                            @can('edit cuti')
+                                                <td>
+                                                    @if($cuti->cutiRequest->status_hod == config('cuti.status.pending') && $cuti->cutiRequest->status_hodp == config('cuti.status.pending'))
+                                                        <a href="{{ route('cuti.edit', $cuti->id) }}" class="text-secondary" style="font-size: 20px"><i class="fa fa-edit"></i></a>
+                                                    @else
+                                                        -
+                                                    @endif
+                                                </td>
+                                            @endcan
+                                            @can('delete cuti')
+                                                <td>
+                                                    <a href="#" class="text-danger" style="font-size: 20px" onclick="deleteItem('#delete-cuti-{{ $cuti->id }}', 'Cuti {{ $cuti->user->name }}')">
+                                                        <i class="ti-trash"></i>
+                                                    </a>
+                                                    <form action="{{ route('cuti.destroy', $cuti->id) }}" method="POST" id="delete-cuti-{{ $cuti->id }}">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                    </form>
+                                                </td>
+                                            @endcan
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
