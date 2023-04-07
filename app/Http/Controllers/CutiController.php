@@ -51,16 +51,10 @@ class CutiController extends Controller
 
     public function store(StoreCutiRequest $request): RedirectResponse
     {
-        try {
-            abort_if(!Gate::allows('create cuti'), 403);
+        abort_if(!Gate::allows('create cuti'), 403);
 
-            $this->repository->store($request->all());
-            return redirect()->route('cuti.index')->with('toastr-success', 'Cuti created successfully.');
-        } catch (CutiRequestStillProcessingException $e) {
-            return redirect()->back()->with('swal-warning', $e->getMessage());
-        } catch (CutiDateRequestedException $e) {
-            return redirect()->back()->with('swal-error', $e->getMessage());
-        }
+        $this->repository->store($request->all());
+        return redirect()->route('cuti.index')->with('toastr-success', 'Cuti created successfully.');
     }
 
     public function show(Cuti $cuti): View

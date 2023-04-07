@@ -2,8 +2,12 @@
 
 namespace Tests\Feature\cuti;
 
+use App\Exceptions\CutiDateRequestedException;
+use App\Exceptions\CutiRequestStillProcessingException;
+use App\Interfaces\CutiRepositoryInterface;
 use App\Models\Cuti;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -68,7 +72,6 @@ class StoreCutiTest extends baseCuti
         ];
     }
 
-
     /**
      * @dataProvider userCreate
      */
@@ -105,5 +108,107 @@ class StoreCutiTest extends baseCuti
             'status_hodp' => config('cuti.status.pending'),
             'note_hodp' => null,
         ]);
+    }
+
+    public function test_store_leave_requested_still_processing_got_the_right_exception(): void
+    {
+        $user = $this->createUserWithRoles('super admin');
+        $this->actingAs($user);
+
+        Cuti::factory()->create([
+            'user_id' => $user->id,
+            'status' => config('cuti.status.pending'),
+        ]);
+
+        $request = $this->prepareRequest();
+
+        $this->expectException(CutiRequestStillProcessingException::class);
+        $this->expectExceptionMessage('You already has a pending cuti request Please wait for the approval.');
+
+        $repo = $this->app->make(CutiRepositoryInterface::class);
+        $repo->store($request);
+    }
+
+    public function test_store_leave_requested_still_processing_redirect_back_with_the_right_message(): void
+    {
+        $user = $this->createUserWithRoles('super admin');
+        $this->actingAs($user);
+
+        Cuti::factory()->create([
+            'user_id' => $user->id,
+            'status' => config('cuti.status.pending'),
+        ]);
+
+        $request = $this->prepareRequest();
+
+        $response = $this->from(route('cuti.create'))->post(route('cuti.store'), $request);
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('cuti.create'));
+        $response->assertSessionHas('swal-warning', 'You already has a pending cuti request Please wait for the approval.');
+    }
+
+    public function test_store_leave_check_available_date_throw_right_exception(): void
+    {
+        $user = $this->createUserWithRoles('super admin');
+        $this->actingAs($user);
+
+        $from = Carbon::now()->addDays(1)->format('Y-m-d');
+        $to = Carbon::now()->addDays(4)->format('Y-m-d');
+
+        Cuti::factory()->create([
+            'user_id' => $user->id,
+            'from' => $from,
+            'to' => $to,
+            'status' => config('cuti.status.approved'),
+        ]);
+
+        $request = $this->prepareRequest();
+        $request['date'] = $from . ' - ' . $to;
+
+        $date = CarbonPeriod::create($from, $to);
+
+        $arrayDate = [];
+        foreach($date as $d) {
+            $arrayDate[] = $d->format('d-m-Y');
+        }
+
+        $this->expectException(CutiDateRequestedException::class);
+        $this->expectExceptionMessage('You already has a cuti request on ' . implode(', ', $arrayDate) . '. You can only request cuti once in a period.');
+
+        $repo = $this->app->make(CutiRepositoryInterface::class);
+        $repo->store($request);
+    }
+
+    public function test_store_leave_check_available_date_redirect_back_with_the_right_message(): void
+    {
+        $user = $this->createUserWithRoles('super admin');
+        $this->actingAs($user);
+
+        $from = Carbon::now()->addDays(1)->format('Y-m-d');
+        $to = Carbon::now()->addDays(4)->format('Y-m-d');
+
+        Cuti::factory()->create([
+            'user_id' => $user->id,
+            'from' => $from,
+            'to' => $to,
+            'status' => config('cuti.status.approved'),
+        ]);
+
+        $request = $this->prepareRequest();
+        $request['date'] = $from . ' - ' . $to;
+
+        $date = CarbonPeriod::create($from, $to);
+
+        $arrayDate = [];
+        foreach($date as $d) {
+            $arrayDate[] = $d->format('d-m-Y');
+        }
+
+        $response = $this->from(route('cuti.create'))->post(route('cuti.store'), $request);
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('cuti.create'));
+        $response->assertSessionHas('swal-error', 'You already has a cuti request on ' . implode(', ', $arrayDate) . '. You can only request cuti once in a period.');
     }
 }

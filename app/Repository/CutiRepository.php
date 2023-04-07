@@ -42,7 +42,7 @@ class CutiRepository implements CutiRepositoryInterface
     public function store(array $request): void
     {
         DB::transaction(function () use ($request) {
-            $this->checkCuti();
+            $this->checkLeave();
             $this->checkAvailableDate($request);
 
             $date = explode(' ', $request['date']);
@@ -72,13 +72,13 @@ class CutiRepository implements CutiRepositoryInterface
         $cuti->delete();
     }
 
-    private function checkCuti(): void
+    private function checkLeave(): void
     {
         $checkCuti = Cuti::where('user_id', auth()->user()->id)
-            ->where('status', config('cuti.status.pending'))
+            ->pending()
             ->exists();
 
-        throw_if($checkCuti, new CutiRequestStillProcessingException('You already has a pending cuti request Please wait for the approval.'));
+        throw_if($checkCuti, new CutiRequestStillProcessingException());
     }
 
     private function checkAvailableDate(array $request): void
@@ -103,8 +103,7 @@ class CutiRepository implements CutiRepositoryInterface
         }
 
         $result = array_intersect($notAavailableDate, $requestDate);
-        $message = 'You already has a cuti request on ' . implode(', ', $result) . '. You can only request cuti once in a period.';
-        throw_if(!empty($result), new CutiDateRequestedException($message));
+        throw_if(!empty($result), new CutiDateRequestedException(implode(', ', $result)));
     }
 
     public function processStatus(Cuti $cuti, array $request): void
