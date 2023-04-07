@@ -53,7 +53,7 @@ abstract class baseCuti extends TestCase
         ];
     }
 
-    protected function userViewCutiReqeust(): array
+    protected function userViewCutiRequest(): array
     {
         return [
             'super admin' => ['super admin'],

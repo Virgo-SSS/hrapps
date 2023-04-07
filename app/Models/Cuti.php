@@ -20,6 +20,7 @@ class Cuti extends Model
         'from',
         'to',
         'reason',
+        'status',
     ];
 
     /*

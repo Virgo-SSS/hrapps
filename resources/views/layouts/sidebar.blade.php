@@ -42,7 +42,7 @@
                     <li>
                         <a href="javascript:void(0)" aria-expanded="true"><i class="fa fa-hourglass"></i><span>Cuti</span></a>
                         <ul class="collapse">
-                            <li><a href="{{ route('cuti.request') }}">Request Cuti</a></li>
+                            <li><a href="{{ route('cuti.pending') }}">Request Cuti</a></li>
                             <li><a href="{{ route('cuti.index') }}">Data Cuti</a></li>
                         </ul>
                     </li>

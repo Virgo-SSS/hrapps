@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\CutiDateRequestedException;
 use App\Exceptions\CutiRequestStillProcessingException;
+use App\Http\Requests\ActionLeaveRequest;
 use App\Interfaces\CutiRepositoryInterface;
 use App\Models\Cuti;
 use App\Http\Requests\StoreCutiRequest;
 use App\Http\Requests\UpdateCutiRequest;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
@@ -39,12 +41,12 @@ class CutiController extends Controller
         return view('cuti.create', compact('users'));
     }
 
-    public function request(): view
+    public function pending(): view
     {
         abort_if(!Gate::allows('view cuti request'), 403);
 
         $pendingCutis = $this->repository->getPendingCuti();
-        return view('cuti.request', compact('pendingCutis'));
+        return view('cuti.pending', compact('pendingCutis'));
     }
 
     public function store(StoreCutiRequest $request): RedirectResponse
@@ -92,5 +94,21 @@ class CutiController extends Controller
 
         $this->repository->delete($cuti);
         return redirect()->route('cuti.index')->with('toastr-success', 'Cuti deleted successfully.');
+    }
+
+    public function approve(Cuti $cuti, ActionLeaveRequest $request): RedirectResponse
+    {
+        abort_if(!Gate::allows('view cuti request'), 403);
+
+        $this->repository->processStatus($cuti, $request->only(['note', 'status']));
+        return redirect()->route('cuti.pending')->with('toastr-success', 'Cuti approved successfully.');
+    }
+
+    public function reject(Cuti $cuti,  ActionLeaveRequest $request): RedirectResponse
+    {
+        abort_if(!Gate::allows('view cuti request'), 403);
+
+        $this->repository->processStatus($cuti, $request->only(['note', 'status']));
+        return redirect()->route('cuti.pending')->with('toastr-success', 'Cuti rejected successfully.');
     }
 }

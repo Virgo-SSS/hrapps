@@ -7,6 +7,7 @@ use App\Exceptions\CutiRequestStillProcessingException;
 use App\Interfaces\CutiRepositoryInterface;
 use App\Interfaces\CutiRequestRepositoryInterface;
 use App\Models\Cuti;
+use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -104,5 +105,55 @@ class CutiRepository implements CutiRepositoryInterface
         $result = array_intersect($notAavailableDate, $requestDate);
         $message = 'You already has a cuti request on ' . implode(', ', $result) . '. You can only request cuti once in a period.';
         throw_if(!empty($result), new CutiDateRequestedException($message));
+    }
+
+    public function processStatus(Cuti $cuti, array $request): void
+    {
+        DB::transaction(function () use ($cuti, $request) {
+            if($cuti->cutiRequest->head_of_division == auth()->user()->id && $cuti->cutiRequest->status_hod == config('cuti.status.pending')) {
+                $this->head_of_division_action($cuti, $request);
+            }
+
+            if($cuti->cutiRequest->head_of_department == auth()->user()->id  && $cuti->cutiRequest->status_hodp == config('cuti.status.pending')
+                && $cuti->cutiRequest->status_hod != config('cuti.status.pending')) {
+                $this->head_of_department_action($cuti, $request);
+                $cuti = $cuti->fresh();
+                $this->commit($cuti);
+            }
+        });
+    }
+
+    private function head_of_division_action(Cuti $cuti, array $request): void
+    {
+        $cuti->cutiRequest()->update([
+            'status_hod' => $request['status'] ? config('cuti.status.approved') : config('cuti.status.rejected'),
+            'note_hod' => $request['note'] ?? '',
+            'approved_hod_at' => Carbon::now(),
+        ]);
+    }
+
+    private function head_of_department_action(Cuti $cuti, array $request): void
+    {
+        $cuti->cutiRequest()->update([
+            'status_hodp' => $request['status'] ? config('cuti.status.approved') : config('cuti.status.rejected'),
+            'note_hodp' => $request['note'] ?? '',
+            'approved_hodp_at' => Carbon::now(),
+        ]);
+    }
+
+    private function commit(Cuti $cuti): void
+    {
+        $hod = $cuti->cutiRequest->status_hod;
+        $hodp = $cuti->cutiRequest->status_hodp;
+
+        $status = config('cuti.status.rejected');
+
+        if($hod == config('cuti.status.approved') && $hodp == config('cuti.status.approved')) {
+            $status = config('cuti.status.approved');
+        }
+
+        $cuti->update([
+            'status' => $status
+        ]);
     }
 }

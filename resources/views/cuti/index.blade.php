@@ -1,3 +1,4 @@
+@php use Illuminate\Support\Facades\Auth; @endphp
 @extends('layouts.app')
 
 @section('title')
@@ -60,21 +61,33 @@
                                             -
                                         </td>
                                         <td>
-                                            <ul class="d-flex">
-                                                <li>
-                                                    <a href="{{ route('cuti.edit', $cuti->id) }}" class="text-secondary" style="font-size: 20px"><i class="fa fa-edit"></i></a>
-                                                </li>
-                                                <span class="mr-2 ml-2">|</span>
-                                                <li>
-                                                    <a href="#" class="text-danger" style="font-size: 20px" onclick="deleteItem('#delete-cuti-{{ $cuti->id }}', 'Cuti {{ $cuti->user->name }}')">
-                                                        <i class="ti-trash"></i>
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                            <form action="{{ route('cuti.destroy', $cuti->id) }}" method="POST" id="delete-cuti-{{ $cuti->id }}">
-                                                @csrf
-                                                @method('DELETE')
-                                            </form>
+                                            @if($cuti->cutiRequest->status_hod == config('cuti.status.pending') && $cuti->cutiRequest->status_hodp == config('cuti.status.pending')
+                                                || auth()->user()->can('edit cuti')
+                                                || auth()->user()->can('delete cuti')
+                                                )
+                                                <ul class="d-flex">
+                                                        @can('edit cuti')
+                                                        <li>
+                                                            <a href="{{ route('cuti.edit', $cuti->id) }}" class="text-secondary" style="font-size: 20px"><i class="fa fa-edit"></i></a>
+                                                        </li>
+                                                        <span class="mr-2 ml-2">|</span>
+                                                        @endcan
+
+                                                        @can('delete cuti')
+                                                        <li>
+                                                            <a href="#" class="text-danger" style="font-size: 20px" onclick="deleteItem('#delete-cuti-{{ $cuti->id }}', 'Cuti {{ $cuti->user->name }}')">
+                                                                <i class="ti-trash"></i>
+                                                            </a>
+                                                        </li>
+                                                        <form action="{{ route('cuti.destroy', $cuti->id) }}" method="POST" id="delete-cuti-{{ $cuti->id }}">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                        </form>
+                                                        @endcan
+                                                </ul>
+                                            @else
+                                                -
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach

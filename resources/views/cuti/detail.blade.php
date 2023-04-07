@@ -41,8 +41,8 @@
                                 <tr class="text-capitalize">
                                     <th>No</th>
                                     <th>Name</th>
-                                    <th>Noted</th>
-                                    <th >Status</th>
+                                    <th>Note</th>
+                                    <th>Status</th>
                                     <th>Date</th>
                                 </tr>
                             </thead>

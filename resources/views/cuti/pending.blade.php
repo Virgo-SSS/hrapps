@@ -39,18 +39,24 @@
                                         <td>{{ $cuti->reason }}</td>
                                         <td>{{ $cuti->user->profile->cuti }}</td>
                                         <td>
-                                            <a href="#">
+                                            <a href="#" onclick="actionLeave('approve-{{ $cuti->id }}')">
                                                 <button class="btn btn-success" style="padding:1px 9px">
                                                         <i class="fa fa-check" style="font-size: 25px;color: greenyellow"></i>
                                                 </button>
                                             </a>
                                             |
-                                            <a href="#" data-toggle="modal" data-target="#exampleModalCenter">
+                                            <a href="#" onclick="actionLeave('reject-{{ $cuti->id }}')">
                                                 <button class="btn btn-danger" style="padding:1px 9px">
                                                         <i class="fa fa-times" style="font-size: 25px;color: white"></i>
                                                 </button>
                                             </a>
                                         </td>
+                                        <form action="#" id="actionForm" method="POST">
+                                            @csrf
+                                            @method('PUT')
+                                            <input type="hidden" name="note" id="note-action">
+                                            <input type="hidden" name="status" id="status-action">
+                                        </form>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -63,36 +69,32 @@
 </div>
 @endsection
 
-@section('modal')
-    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Are you sure want to reject this leave ?</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="">
-                        <label for="">*Note (optional) :</label>
-                        <textarea name="note" id="note_head" cols="10" rows="2" class="form-control"></textarea>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                </div>
-            </div>
-        </div>
-    </div>
-@endsection
-
-
 @section('scripts')
     <script>
         $(document).ready(function() {
             $('#cutiTable').DataTable();
         });
+
+        async function actionLeave(parameter) {
+            const { value: text } = await Swal.fire({
+                input: 'textarea',
+                inputLabel: 'Note (Optional)',
+                inputPlaceholder: 'Type your message here...',
+                inputAttributes: {
+                    'aria-label': 'Type your message here'
+                },
+                showCancelButton: true
+            })
+
+            if (text !== undefined) {
+                let status = parameter.split('-');
+                let route = status[0] == 'approve' ? '{{ route('cuti.approve', ':id') }}' : '{{ route('cuti.reject', ':id') }}';
+                route = route.replace(':id', status[1]);
+
+                $('#note-action').val(text);
+                $('#status-action').val(status[0]);
+                $('#actionForm').attr('action', route).submit();
+            }
+        }
     </script>
 @endsection

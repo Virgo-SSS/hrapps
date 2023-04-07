@@ -13,7 +13,7 @@ class CutiRequestPageTest extends baseCuti
 {
     public function test_user_cant_access_request_cuti_page_if_not_authenticated(): void
     {
-        $response = $this->get(route('cuti.request'));
+        $response = $this->get(route('cuti.pending'));
 
         $response->assertStatus(302);
         $response->assertRedirect(route('login'));
@@ -24,13 +24,13 @@ class CutiRequestPageTest extends baseCuti
         $user = $this->createUserWithRoles('invalidRoles');
         $this->assignPermission('invalidpermission', $user);
 
-        $response = $this->actingAs($user)->get(route('cuti.request'));
+        $response = $this->actingAs($user)->get(route('cuti.pending'));
 
         $response->assertStatus(403);
     }
 
     /**
-     * @dataProvider userViewCutiReqeust
+     * @dataProvider userViewCutiRequest
      */
     public function test_super_admin_can_access_request_cuti_page_if_autheticated(string $role, ?string $permission = null): void
     {
@@ -39,14 +39,14 @@ class CutiRequestPageTest extends baseCuti
             $this->assignPermission($permission, $user);
         }
 
-        $response = $this->actingAs($user)->get(route('cuti.request'));
+        $response = $this->actingAs($user)->get(route('cuti.pending'));
 
         $response->assertStatus(200);
-        $response->assertViewIs('cuti.request');
+        $response->assertViewIs('cuti.pending');
     }
 
     /**
-     * @dataProvider userViewCutiReqeust
+     * @dataProvider headLeave
      */
     public function test_head_get_the_right_leave_pending_data(string $loginAs, int $expected1, int $expected2): void
     {
@@ -73,7 +73,7 @@ class CutiRequestPageTest extends baseCuti
         $this->assertEquals($expected2, $pending->count());
     }
 
-    protected function userViewCutiReqeust(): array
+    protected function headLeave(): array
     {
         return [
             'head of division' => ['hod', 1,0],

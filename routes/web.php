@@ -39,7 +39,9 @@ Route::middleware('auth')->group(function(){
     Route::get('posisi/posisi-by-divisi/{divisi_id}', [PosisiController::class,'getPosisiByDivisi'])->name('posisi.by-divisi');
     Route::resource('posisi', PosisiController::class)->except(['show','create']);
 
-    Route::get('cuti/request', [CutiController::class,'request'])->name('cuti.request');
+    Route::get('cuti/pending', [CutiController::class,'pending'])->name('cuti.pending');
+    Route::put('cuti/approve/{cuti}', [CutiController::class,'approve'])->name('cuti.approve');
+    Route::put('cuti/reject/{cuti}', [CutiController::class,'reject'])->name('cuti.reject');
     Route::resource('cuti', CutiController::class);
 
     Route::get('role/{role}/permission', [RoleController::class,'permissions'])->name('role.permissions');
