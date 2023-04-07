@@ -21,6 +21,7 @@ class Cuti extends Model
         'to',
         'reason',
         'status',
+        'edit_info',
     ];
 
     /*

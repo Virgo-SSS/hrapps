@@ -1,9 +1,22 @@
-@php use Illuminate\Support\Facades\Auth; @endphp
 @extends('layouts.app')
 
 @section('title')
     <li><a href="{{ route('cuti.index') }}">Cuti</a></li>
     <li><span>Index</span></li>
+@endsection
+
+@section('styles')
+    <style>
+        .modal-dialog {
+            max-width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .modal-header {
+            background-color: aliceblue;
+        }
+    </style>
 @endsection
 
 @section('content')
@@ -34,6 +47,7 @@
                                         <th scope="col">Days</th>
                                         <th scope="col">Sisa Cuti</th>
                                         <th scope="col">Status</th>
+                                        <th scope="col">Edit Info</th>
                                         @can('edit cuti')
                                         <th scope="col">Edit</th>
                                         @endcan
@@ -60,6 +74,17 @@
                                                         {{ $cuti->status_in_human }}
                                                     </a>
                                                 </span>
+                                            </td>
+                                            <td>
+                                                @if(!is_null($cuti->edit_info))
+                                                    <span class="status-p bg-primary" onclick="showEditInfoDetail('{{ $cuti->edited_by }}', '{{ $cuti->edited_at }}', {{ $cuti->context }})">
+                                                        <a href="#" style="text-decoration: none; color: white" >
+                                                            Edited
+                                                        </a>
+                                                    </span>
+                                                @else
+                                                    -
+                                                @endif
                                             </td>
                                             @can('edit cuti')
                                                 <td>
@@ -93,6 +118,27 @@
     </div>
 @endsection
 
+@section('modal')
+    <!-- Modal -->
+    <div class="modal fade" id="detail_edit_info" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Edit Information</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Edited By : <span id="edited_by"></span></p>
+                    <p>Edited At : <span id="edited_at"></span></p>
+                    <p id="context"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
 @section('scripts')
     <script>
         $('#cuti-table').DataTable({
@@ -104,5 +150,21 @@
                 },
             ]
         });
+
+        function showEditInfoDetail(edited_by, edited_at, context)
+        {
+            $('#detail_edit_info #edited_by').text(edited_by);
+            $('#detail_edit_info #edited_at').text(edited_at);
+
+            var output = [];
+            output[0] = "Context : <br>";
+            for (var i = 1; i < context.length + 1 ; i++) {
+                output[i] = "&nbsp &nbsp &nbsp - " + context[i - 1] + "<br>";
+            }
+            output = output.join("");
+            $('#detail_edit_info #context').html(output)
+
+            $('#detail_edit_info').modal('show');
+        }
     </script>
 @endsection

@@ -5,6 +5,7 @@ namespace Tests\Feature\cuti;
 use App\Models\Cuti;
 use App\Models\CutiRequest;
 use App\Models\User;
+use Carbon\Carbon;
 use Tests\Feature\cuti\baseCuti;
 
 class updateCutiTest extends baseCuti

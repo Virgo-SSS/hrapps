@@ -7,6 +7,7 @@ use App\Exceptions\CutiRequestStillProcessingException;
 use App\Interfaces\CutiRepositoryInterface;
 use App\Interfaces\CutiRequestRepositoryInterface;
 use App\Models\Cuti;
+use App\Models\User;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Support\Collection;
@@ -20,7 +21,17 @@ class CutiRepository implements CutiRepositoryInterface
             ->when(!auth()->user()->hasRole('super admin'), function ($query) {
                 return $query->where('user_id', auth()->user()->id);
             })
-            ->get();
+            ->get()
+            ->map(function ($item) {
+                $edit_info = json_decode($item->edit_info);
+
+                if(!is_null($edit_info)) {
+                    $item->edited_by = $edit_info->edited_by ?? null;
+                    $item->edited_at = $edit_info->edited_at ? Carbon::parse($edit_info->edited_at)->format('d F Y H:i:s') : null;
+                    $item->context = $edit_info->context ? json_encode($edit_info->context) : null;
+                }
+                return $item;
+            });
     }
 
     public function getPendingCuti(): Collection
@@ -62,8 +73,27 @@ class CutiRepository implements CutiRepositoryInterface
     public function update(array $request, Cuti $cuti): void
     {
         DB::transaction(function () use ($request, $cuti) {
+            $edit = [];
+            $edit['edited_by'] = auth()->user()->name;
+            $edit['edited_at'] = Carbon::now()->toDateTimeString();
+
+            if($cuti->reason != $request['reason']) {
+                $edit['context'][] = auth()->user()->name . ' Change Reason From ' . $cuti->reason . ' To ' . $request['reason'];
+            }
+
+            if($cuti->cutiRequest->head_of_division != $request['head_of_division']) {
+                $edit['context'][] = auth()->user()->name . ' Change Head Of Division From ' . $cuti->cutiRequest->head_division->name . ' To ' . User::find($request['head_of_division'])->name;
+            }
+
+            if($cuti->cutiRequest->head_of_department != $request['head_of_department']) {
+                $edit['context'][] = auth()->user()->name . ' Change Head Of Department From ' . $cuti->cutiRequest->head_department->name . ' To ' . User::find($request['head_of_department'])->name;
+            }
+
+            $edit_info = json_encode($edit);
+
             $cuti->update([
                 'reason' => $request['reason'],
+                'edit_info' => $edit_info,
             ]);
 
             app(CutiRequestRepositoryInterface::class)->update($cuti, $request);
